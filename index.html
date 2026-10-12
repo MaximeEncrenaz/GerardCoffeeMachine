@@ -677,7 +677,7 @@ function render(){
   f.style.background = c.health>70?"var(--leaf)":c.health>40?"var(--crema)":"var(--cherry)";
   document.getElementById("kWeek").textContent = c.week;
   document.getElementById("kStock").textContent = c.stock;
-  document.getElementById("kClean").textContent = c.daysSinceClean===null ? "jamais" : c.daysSinceClean<1 ? "aujourd'hui" : Math.floor(c.daysSinceClean)+" j";
+  document.getElementById("kClean").textContent = c.daysSinceClean===null ? "jamais" : Math.floor(c.daysSinceClean)+" j";
   document.getElementById("kDescale").textContent = c.hasDescale ? c.cupsSinceDescale : "jamais";
 
   // Qui es-tu
