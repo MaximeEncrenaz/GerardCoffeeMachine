@@ -80,7 +80,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 .who-chip svg{width:28px;height:28px}
 .who-chip[aria-pressed="true"]{opacity:1;background:var(--paper);color:var(--ink);border-color:var(--paper);transform:translateY(-2px)}
 .who-chip.add{opacity:.9;padding:5px 12px;border-style:dashed}
-.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media (max-width:1000px){.actions{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .act{background:var(--paper);color:var(--ink);border:none;border-radius:16px;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
 .act:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .act:disabled{opacity:.5;cursor:not-allowed}
@@ -267,6 +268,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
         <svg viewBox="0 0 48 48"><path d="M30 6l6 6-14 14-6-6z" fill="var(--crema)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 20l-8 8 4 4 2-2 2 4 4-2-2-4 4-2" fill="var(--paper)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><g fill="var(--cherry)"><path d="M36 30l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z"/><path d="M10 8l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></g></svg>
         <strong>J'ai nettoyé</strong><small>bac à marc, buses · +25 XP</small>
       </button>
+      <button class="act" data-act="water">
+        <svg viewBox="0 0 48 48"><path d="M14 10h20l-2 32H16z" fill="var(--paper)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M15.2 22h17.6l-1.3 20H16.5z" fill="#7FB6D9"/><path d="M14 10h20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M24 2q-4 5 0 7q4-2 0-7z" fill="#7FB6D9" stroke="currentColor" stroke-width="1.5"/><circle cx="21" cy="30" r="1.6" fill="var(--paper)"/><circle cx="27" cy="35" r="1.2" fill="var(--paper)"/></svg>
+        <strong>J'ai rempli l'eau</strong><small>le réservoir de Gérard · +15 XP</small>
+      </button>
       <button class="act" data-act="descale">
         <svg viewBox="0 0 48 48"><path d="M19 6h10v10l9 20a4 4 0 0 1-4 6H14a4 4 0 0 1-4-6l9-20z" fill="var(--paper)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M13 30h22l3 6a4 4 0 0 1-4 6H14a4 4 0 0 1-4-6z" fill="var(--leaf)"/><circle cx="20" cy="34" r="2" fill="var(--paper)"/><circle cx="28" cy="37" r="1.5" fill="var(--paper)"/><circle cx="26" cy="24" r="1.3" fill="currentColor"/></svg>
         <strong>J'ai détartré</strong><small>la quête ultime · +80 XP</small>
@@ -340,7 +345,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid 
 
   <div class="card rules">
     <div><b>Solde</b> = café acheté ÷ 7 g − tasses bues. Positif : tu es mécène. Négatif : vampire en devenir.</div>
-    <div><b>XP</b> : tasse +2, achat +15 par 100 g, nettoyage +25, détartrage +80. Dette au-delà de 15 tasses : chaque café coûte −5 XP.</div>
+    <div><b>XP</b> : tasse +2, achat +15 par 100 g, eau remplie +15, nettoyage +25, détartrage +80. Dette au-delà de 15 tasses : chaque café coûte −5 XP.</div>
     <div><b>Photos</b> : clique sur une tasse du classement pour y mettre une image. Elle est partagée avec toute l'équipe.</div>
     <div><b>Gérard</b> perd de la santé à chaque jour sans nettoyage et à chaque tasse. Un détartrage tous les ~300 cafés.</div>
   </div>
@@ -436,16 +441,16 @@ function machineSVG(h){
 const moodOf = p => p.balance<-5 ? "sad" : p.balance>=20 ? "star" : "happy";
 const faceOf = (p, mood) => mugSVG(p.color, mood || "happy", state.avatars[p.id]);
 const CAM = `<svg viewBox="0 0 16 16"><path d="M2 5h3l1.5-2h3L11 5h3v8H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>`;
-const XP = { cup: 2, tax: -5, taxDebt: 15, per100g: 15, clean: 25, descale: 80 };
+const XP = { cup: 2, tax: -5, taxDebt: 15, per100g: 15, water: 15, clean: 25, descale: 80 };
 function xpFor(p, type, qty){
   if (type === "cup"){ const debt = (p.cups||0) - (p.grams||0)/G_PER_CUP; return debt > XP.taxDebt ? XP.tax : XP.cup; }
   if (type === "buy") return Math.round(qty/100*XP.per100g);
-  return type === "clean" ? XP.clean : type === "descale" ? XP.descale : 0;
+  return type === "water" ? XP.water : type === "clean" ? XP.clean : type === "descale" ? XP.descale : 0;
 }
 function compute(){
   const now = Date.now();
   const P = {};
-  for (const [id,p] of Object.entries(state.players)) P[id] = {id, name:p.name, color:p.color, cups:p.cups||0, grams:p.grams||0, cleans:p.cleans||0, descales:p.descales||0, xp:p.xp||0, lastClean:p.lastClean||0, early:0, maxDay:0, days:{}};
+  for (const [id,p] of Object.entries(state.players)) P[id] = {id, name:p.name, color:p.color, cups:p.cups||0, grams:p.grams||0, cleans:p.cleans||0, descales:p.descales||0, waters:p.waters||0, xp:p.xp||0, lastClean:p.lastClean||0, early:0, maxDay:0, days:{}};
   for (const e of state.events){ // historique récent : badges de rythme
     const p = P[e.player]; if (!p || e.type !== "cup") continue;
     const d = new Date(e.at), k = d.toDateString();
@@ -465,6 +470,7 @@ function compute(){
     if (p.grams>=1000) b.push("Mécène du kilo");
     if (p.cleans>=5) b.push("Brosse d'or");
     if (p.descales>=1) b.push("Chimiste du calcaire");
+    if (p.waters>=5) b.push("Porteur d'eau officiel");
     if (p.maxDay>=5) b.push("Insomniaque certifié");
     if (p.early>=3) b.push("Lève-tôt hagard");
     if (p.balance<-25) b.push("Vampire officiel");
@@ -496,6 +502,7 @@ const ACT_TXT = {
   cup:[n=>`${n} a bu un café. Gérard prend note.`,n=>`${n} recharge ses batteries humaines.`,n=>`${n} a encore frappé.`],
   buy:[(n,q)=>`${n} a ramené ${q} g de café. Héros.`,(n,q)=>`${n} nourrit la tribu : ${q} g.`,(n,q)=>`${n} a payé sa tournée (${q} g).`],
   clean:[n=>`${n} a nettoyé Gérard. Gérard pleure de joie.`,n=>`${n} a vidé le bac à marc sans vomir.`,n=>`${n} a sorti l'éponge sacrée.`],
+  water:[n=>`${n} a rempli le réservoir. Gérard n'est plus déshydraté.`,n=>`${n} a fait le plein. Gérard glougloute de gratitude.`,n=>`${n} : porteur d'eau, héros discret.`],
   descale:[n=>`${n} a détartré Gérard. Une statue est en commande.`,n=>`${n} a vaincu le calcaire en duel.`],
 };
 
@@ -536,7 +543,7 @@ function render(){
         <div class="t-main">
           <div class="t-top"><h3>${esc(p.name)}</h3><span class="lvl">niv. ${p.level} · ${p.title}</span><span class="chip ${p.status[0]}">${p.status[1]}</span></div>
           <div class="xpbar" title="${p.xp} XP"><i style="width:${Math.round(p.prog*100)}%"></i></div>
-          <div class="t-stats"><span><b>${p.xp}</b> XP${p.toNext?` · encore ${p.toNext}`:""}</span><span>solde <b>${bal>0?"+":""}${bal}</b> tasses</span><span><b>${p.cups}</b> bues</span><span><b>${(p.grams/1000).toLocaleString("fr-FR",{maximumFractionDigits:2})}</b> kg achetés</span><span><b>${p.cleans+p.descales}</b> nettoyages</span></div>
+          <div class="t-stats"><span><b>${p.xp}</b> XP${p.toNext?` · encore ${p.toNext}`:""}</span><span>solde <b>${bal>0?"+":""}${bal}</b> tasses</span><span><b>${p.cups}</b> bues</span><span><b>${(p.grams/1000).toLocaleString("fr-FR",{maximumFractionDigits:2})}</b> kg achetés</span><span><b>${p.cleans+p.descales}</b> nettoyages</span><span><b>${p.waters}</b> pleins d'eau</span></div>
           ${p.badges.length?`<div class="badges">${p.badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>`:""}
         </div>
         <button class="del" data-del="${esc(p.id)}" aria-label="Retirer ${esc(p.name)}">retirer</button>
@@ -620,7 +627,7 @@ function beans(n){
 }
 
 /* ---------- Données : Firebase (Firestore, temps réel) ---------- */
-const ACT_FR = { cup:"Café bu", buy:"Achat", clean:"Nettoyage", descale:"Détartrage" };
+const ACT_FR = { cup:"Café bu", buy:"Achat", water:"Eau remplie", clean:"Nettoyage", descale:"Détartrage" };
 const keyOf = n => String(n||"").trim().toLowerCase();
 const cleanName = n => String(n||"").normalize("NFC").replace(/[^\p{L}\p{N} '\-]/gu,"").replace(/\s+/g," ").trim().slice(0,24);
 const colorOf = n => { let h=0; for (const c of keyOf(n)) h=(h*31+c.codePointAt(0))>>>0; return COLORS[h % (COLORS.length-1)]; };
@@ -954,9 +961,9 @@ function renderGames(c){
 cremaRounds();
 
 /* ---------- Actions ---------- */
-const DELTA_KEYS = ["cups","grams","cleans","descales","xp"];
+const DELTA_KEYS = ["cups","grams","cleans","descales","waters","xp"];
 function deltaFor(p, type, qty){
-  return { cups: type==="cup"?1:0, grams: type==="buy"?qty:0, cleans: type==="clean"?1:0, descales: type==="descale"?1:0, xp: xpFor(p, type, qty) };
+  return { cups: type==="cup"?1:0, grams: type==="buy"?qty:0, cleans: type==="clean"?1:0, descales: type==="descale"?1:0, waters: type==="water"?1:0, xp: xpFor(p, type, qty) };
 }
 function applyLocal(p, d, sign){ for (const k of DELTA_KEYS) p[k] = (p[k]||0) + sign*(d[k]||0); }
 function incFields(d, sign){ const o = {}; for (const k of DELTA_KEYS) if (d[k]) o[k] = FV.increment(sign*d[k]); return o; }
@@ -1031,7 +1038,7 @@ document.getElementById("addForm").addEventListener("submit", async e=>{
   const name = cleanName(document.getElementById("newName").value);
   if (!name){ toast("Un prénom avec des lettres, s'il te plaît. Gérard n'accepte pas les hiéroglyphes."); return; }
   if (Object.values(state.players).some(p=>keyOf(p.name)===keyOf(name))){ toast(`${esc(name)} existe déjà au comptoir. Choisis un autre nom (ex. « ${esc(name)} B. »).`); return; }
-  const data = { name, color: colorOf(name), createdAt: Date.now(), cups:0, grams:0, cleans:0, descales:0, xp:0, lastClean:0 };
+  const data = { name, color: colorOf(name), createdAt: Date.now(), cups:0, grams:0, cleans:0, descales:0, waters:0, xp:0, lastClean:0 };
   try {
     let id;
     if (demo){ id = newId(); state.players[id] = data; }
@@ -1056,7 +1063,7 @@ function loadDemo(){
   for (let i=0;i<22;i++) add("a","cup",0,(i*7+2)*h);
   for (let i=0;i<18;i++) add("c","cup",0,(i*8+3)*h);
   for (let i=0;i<9;i++) add("d","cup",0,(i*15+4)*h);
-  add("c","clean",0,2*24*h); add("a","clean",0,26*h); add("d","buy",250,3*h);
+  add("c","clean",0,2*24*h); add("c","water",0,5*h); add("d","water",0,30*h); add("a","water",0,50*h); add("a","clean",0,26*h); add("d","buy",250,3*h);
   ev.sort((x,y)=>x.at-y.at);
   const meta = {}; let total = 0;
   for (const e of ev){
