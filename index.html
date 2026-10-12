@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Café Comptoir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: comptoir de bistrot — la machine-mascotte trône en haut, la barre d'actions juste dessous, puis le classement façon tickets de caisse */
+:root{
+  --bg:#F2E4CF;          /* latte */
+  --paper:#FBF4E8;       /* mousse de lait */
+  --ink:#2A1810;         /* espresso */
+  --ink-soft:#6E5444;    /* mocha clair */
+  --mocha:#6B3E26;
+  --crema:#D9A066;
+  --cherry:#C2372C;      /* cerise de caféier */
+  --leaf:#5F7F34;        /* feuille de caféier */
+  --line:#E2CDB0;
+  --shadow:rgba(60,30,10,.16);
+  --f-display:"Shrikhand","Cooper Black",Georgia,serif;
+  --f-body:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"DM Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1C120D;--paper:#2A1C15;--ink:#F3E4CE;--ink-soft:#C3A88F;--mocha:#E0A877;--crema:#E7B27A;--cherry:#F06A5A;--leaf:#9DC067;--line:#47322A;--shadow:rgba(0,0,0,.45);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1C120D;--paper:#2A1C15;--ink:#F3E4CE;--ink-soft:#C3A88F;--mocha:#E0A877;--crema:#E7B27A;--cherry:#F06A5A;--leaf:#9DC067;--line:#47322A;--shadow:rgba(0,0,0,.45);color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  background-image:radial-gradient(circle at 1px 1px,color-mix(in srgb,var(--mocha) 14%,transparent) 1px,transparent 0);background-size:22px 22px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.2px}
+h2{font-size:1.6rem;color:var(--mocha)}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--crema);outline-offset:2px}
+
+/* CONNEXION ONEDRIVE */
+.sync{background:var(--paper);border:2px solid var(--ink);border-radius:16px;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;box-shadow:4px 4px 0 var(--ink)}
+.sync .msg{flex:1 1 260px;min-width:0;font-size:.9rem}
+.sync .msg b{font-family:var(--f-display);font-weight:400;font-size:1.05rem;display:block}
+.sync .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sync input{flex:1 1 260px;min-width:0;border:2px solid var(--ink);background:var(--bg);color:var(--ink);border-radius:10px;padding:8px 10px;font:inherit;font-size:.85rem}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;border-radius:99px;padding:3px 10px;border:1.5px solid currentColor}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.pill.on{color:var(--leaf)} .pill.off{color:var(--ink-soft)} .pill.err{color:var(--cherry)} .pill.busy{color:var(--mocha)}
+.btn.ms{display:inline-flex;align-items:center;gap:8px}
+.btn.ms svg{width:16px;height:16px}
+.btn.small{padding:6px 12px;font-size:.82rem}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:24px;align-items:center}
+.machine-box{position:relative}
+.machine-box svg{width:100%;height:auto;display:block}
+.bubble{position:relative;background:var(--paper);border:2px solid var(--ink);border-radius:18px;padding:12px 16px;font-weight:600;box-shadow:4px 4px 0 var(--ink);max-width:46ch}
+.bubble::before{content:"";position:absolute;left:-12px;top:22px;border:10px solid transparent;border-right-color:var(--ink)}
+.title-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.title-row h1{font-size:clamp(2.3rem,6vw,3.6rem);color:var(--ink);line-height:1}
+.title-row .tag{font-family:var(--f-mono);font-size:.8rem;color:var(--cherry);transform:rotate(-3deg);border:1.5px dashed var(--cherry);padding:2px 8px;border-radius:6px}
+.hero-right{display:flex;flex-direction:column;gap:14px;min-width:0}
+.gauge{display:flex;flex-direction:column;gap:6px}
+.gauge-track{height:16px;border-radius:99px;background:var(--line);overflow:hidden;border:2px solid var(--ink)}
+.gauge-fill{height:100%;border-radius:99px;transition:width .6s ease,background .6s}
+.kpis{display:flex;flex-wrap:wrap;gap:8px 22px}
+.kpi b{display:block;font-family:var(--f-mono);font-size:1.35rem;font-weight:500}
+.kpi span{font-size:.8rem;color:var(--ink-soft)}
+
+/* ACTIONS */
+.counter{background:var(--mocha);color:#FBF0E0;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 30px var(--shadow)}
+:root[data-theme="dark"] .counter{color:#1C120D}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .counter{color:#1C120D}}
+.counter .eyebrow{color:inherit;opacity:.8}
+.who{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.who-chip{display:flex;align-items:center;gap:6px;border:2px solid currentColor;background:transparent;border-radius:99px;padding:3px 12px 3px 4px;font-weight:600;opacity:.75;transition:transform .15s,opacity .15s}
+.who-chip svg{width:28px;height:28px}
+.who-chip[aria-pressed="true"]{opacity:1;background:var(--paper);color:var(--ink);border-color:var(--paper);transform:translateY(-2px)}
+.who-chip.add{opacity:.9;padding:5px 12px;border-style:dashed}
+.actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.act{background:var(--paper);color:var(--ink);border:none;border-radius:16px;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.act:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.act:disabled{opacity:.5;cursor:not-allowed}
+.act svg{width:44px;height:44px}
+.act strong{font-family:var(--f-display);font-weight:400;font-size:1.05rem;line-height:1.1}
+.act small{font-size:.75rem;color:var(--ink-soft)}
+.buy-pick{display:flex;gap:4px;margin-top:4px}
+.buy-pick button{border:1.5px solid var(--ink);background:transparent;border-radius:8px;padding:1px 7px;font-family:var(--f-mono);font-size:.78rem}
+.buy-pick button:hover{background:var(--crema);color:#2A1810}
+
+/* GRID */
+.cols{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;align-items:start}
+.section{display:flex;flex-direction:column;gap:12px;min-width:0}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+
+/* PLAYER TICKETS */
+.board{display:flex;flex-direction:column;gap:12px}
+.ticket{background:var(--paper);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:auto 64px minmax(0,1fr);gap:4px 14px;align-items:center;border:1.5px solid var(--line);position:relative}
+.ticket.me{border-color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.rank{font-family:var(--f-display);font-size:1.6rem;color:var(--crema);width:1.6ch;text-align:center}
+.ticket .avatar svg{width:64px;height:64px;display:block}
+.t-main{display:flex;flex-direction:column;gap:6px;min-width:0}
+.t-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.t-top h3{font-size:1.25rem;color:var(--ink)}
+.lvl{font-size:.8rem;color:var(--ink-soft);font-style:italic}
+.xpbar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--crema),var(--mocha));border-radius:99px}
+.t-stats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--ink-soft)}
+.t-stats b{color:var(--ink);font-family:var(--f-mono);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:99px;border:1.5px solid currentColor;white-space:nowrap}
+.chip.good{color:var(--leaf)} .chip.ok{color:var(--mocha)} .chip.bad{color:var(--cherry)}
+.badges{display:flex;flex-wrap:wrap;gap:5px}
+.badge{font-size:.72rem;background:var(--bg);border-radius:6px;padding:1px 7px;border:1px solid var(--line)}
+.del{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--ink-soft);font-size:.75rem;opacity:.5}
+.del:hover{opacity:1;color:var(--cherry)}
+
+/* WHEEL */
+.card{background:var(--paper);border-radius:16px;padding:16px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.wheel-wrap{position:relative;width:min(240px,100%);margin:0 auto;aspect-ratio:1;max-width:100%}
+.wheel-wrap svg{width:100%;height:100%;display:block}
+#wheel{transition:transform 3.6s cubic-bezier(.17,.89,.21,1);transform-origin:50% 50%}
+.pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border:12px solid transparent;border-top:22px solid var(--cherry);filter:drop-shadow(0 2px 0 var(--ink))}
+.btn{background:var(--ink);color:var(--paper);border:none;border-radius:12px;padding:10px 16px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.verdict{min-height:3em;font-weight:600;text-align:center}
+
+/* LOG */
+.log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.log li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:start;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.86rem}
+.log li:last-child{border-bottom:none}
+.log .when{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-soft);white-space:nowrap}
+.log .dot{width:10px;height:10px;border-radius:50%;margin-top:6px}
+.log .undo{background:none;border:none;color:var(--cherry);font-size:.72rem;text-decoration:underline;padding:0;margin-left:6px}
+
+/* ADD FORM */
+.add-form{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.add-form input[type=text]{flex:1 1 160px;min-width:0;border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:10px;padding:8px 10px;font:inherit}
+.add-form.card{flex-direction:row;flex-wrap:wrap;align-items:center}
+/* AVATARS */
+.avatar-wrap{position:relative}
+.avatar{background:none;border:none;padding:0;border-radius:14px;cursor:pointer;display:block}
+.avatar:hover svg{transform:rotate(-6deg) scale(1.05)}
+.avatar svg{transition:transform .2s}
+.avatar-wrap .cam{position:absolute;right:-4px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;pointer-events:none}
+.avatar-wrap .cam svg{width:13px;height:13px}
+.unphoto{position:absolute;left:-6px;bottom:-4px;background:var(--paper);border:1.5px solid var(--ink);border-radius:99px;font-size:.65rem;padding:0 6px;color:var(--ink-soft)}
+/* SALLE DE JEUX */
+.games{background:var(--ink);color:var(--paper);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 30px var(--shadow)}
+.games h2{color:var(--crema)}
+.games .eyebrow{color:var(--crema);opacity:.8}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{background:transparent;border:2px solid var(--crema);color:var(--crema);border-radius:99px;padding:6px 14px;font-weight:700}
+.tab[aria-selected="true"]{background:var(--crema);color:#2A1810}
+.panel{background:var(--paper);color:var(--ink);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel p{margin:0;font-size:.88rem;color:var(--ink-soft)}
+.game-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.game-head h3{font-size:1.4rem;color:var(--mocha)}
+.records{font-size:.8rem;color:var(--ink-soft)}
+.records b{color:var(--ink);font-family:var(--f-mono);font-weight:500}
+.wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;padding:6px;background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--mocha) 10%,transparent) 0 2px,transparent 2px 44px),color-mix(in srgb,var(--crema) 18%,var(--paper));border-radius:12px;min-height:200px;position:relative}
+.poster{position:relative;overflow:hidden;background:#F7EBD3;color:#2A1810;border:2px solid #2A1810;border-radius:4px;padding:10px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;cursor:crosshair;user-select:none;box-shadow:3px 4px 0 rgba(42,24,16,.35);font:inherit}
+.poster:nth-child(odd){transform:rotate(-2deg)} .poster:nth-child(even){transform:rotate(1.5deg)}
+.poster .wanted{font-family:var(--f-display);font-size:1.15rem;letter-spacing:.06em;color:#C2372C}
+.poster > svg{width:84px;height:84px}
+.poster .pname{font-family:var(--f-display);font-size:1.1rem}
+.poster .crime{font-size:.74rem;line-height:1.3}
+.poster .hits{font-family:var(--f-mono);font-size:.75rem;background:#2A1810;color:#F7EBD3;border-radius:6px;padding:1px 7px;margin-top:2px}
+.poster.hit{animation:hit .3s ease}
+@keyframes hit{30%{translate:4px -2px;rotate:3deg}60%{translate:-3px 1px;rotate:-3deg}}
+.splat{position:absolute;pointer-events:none;width:30px;height:30px}
+.flying{position:fixed;left:0;top:0;width:16px;height:22px;z-index:60;pointer-events:none}
+.caption{min-height:1.5em;font-weight:700;color:var(--mocha);text-align:center}
+.arena{position:relative;width:100%;max-width:100%;border-radius:12px;overflow:hidden;background:linear-gradient(#FBF4E8,#EBD6B5);border:2px solid #2A1810;touch-action:none}
+.arena canvas{display:block;width:100%;height:320px}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(42,24,16,.72);color:#FBF4E8;text-align:center;padding:16px}
+.overlay strong{font-family:var(--f-display);font-weight:400;font-size:1.6rem}
+.hud{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:.9rem}
+.crema-zone{display:flex;gap:22px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.glass{position:relative;width:110px;height:220px;border:4px solid #2A1810;border-top:none;border-radius:0 0 26px 26px;background:#FFFDF8;overflow:hidden}
+.glass .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#E7B27A 0 10px,#6B3E26 10px)}
+.glass .target{position:absolute;left:0;right:0;border-top:2px dashed #5F7F34;border-bottom:2px dashed #5F7F34;background:rgba(95,127,52,.18)}
+.crema-side{display:flex;flex-direction:column;gap:10px;min-width:180px;max-width:280px}
+.rounds{display:flex;gap:6px;flex-wrap:wrap}
+.rounds span{font-family:var(--f-mono);font-size:.78rem;border:1.5px solid var(--line);border-radius:6px;padding:2px 6px}
+.btn.big{font-size:1.1rem;padding:14px 22px}
+.swatches{display:flex;gap:4px}
+.swatches label{width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);cursor:pointer;position:relative}
+.swatches input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.swatches label:has(input:checked){outline:3px solid var(--crema);outline-offset:1px}
+
+.empty{text-align:center;padding:26px 16px;color:var(--ink-soft);display:flex;flex-direction:column;gap:8px;align-items:center}
+.empty svg{width:90px}
+
+.rules{font-size:.82rem;color:var(--ink-soft);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 22px}
+.rules b{color:var(--ink);font-family:var(--f-mono);font-weight:500}
+
+/* TOAST */
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(140%);background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:14px;font-weight:600;max-width:min(92vw,520px);box-shadow:0 10px 30px var(--shadow);transition:transform .3s ease;z-index:50;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast .xp{color:var(--crema);font-family:var(--f-mono)}
+.bean{position:fixed;top:-30px;width:14px;height:20px;border-radius:50%;background:var(--mocha);z-index:40;pointer-events:none;animation:fall linear forwards}
+.bean::after{content:"";position:absolute;left:50%;top:10%;bottom:10%;width:2px;margin-left:-1px;background:var(--crema);border-radius:2px;transform:rotate(12deg)}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.wobble{animation:wob .5s ease}
+@keyframes wob{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}50%{opacity:.7}100%{opacity:0;transform:translateY(-10px)}}
+.steam path{animation:steam 2.4s ease-in-out infinite}
+.steam path:nth-child(2){animation-delay:.8s}.steam path:nth-child(3){animation-delay:1.6s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+@media (max-width:780px){
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:left}
+  .machine-box{width:200px}
+  .bubble::before{display:none}
+  .cols{grid-template-columns:1fr}
+  .actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:420px){.ticket{grid-template-columns:48px minmax(0,1fr)}.rank{display:none}.ticket .avatar svg{width:48px;height:48px}}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <section class="sync" id="sync" aria-live="polite">
+    <div class="msg" id="syncMsg"><b>Connexion…</b></div>
+    <div class="row" id="syncActions"></div>
+  </section>
+
+  <header class="hero">
+    <div class="machine-box" id="machineBox" aria-hidden="true"></div>
+    <div class="hero-right">
+      <div class="title-row"><h1>Café Comptoir</h1><span class="tag">tribunal du kawa · est. 2026</span></div>
+      <div class="bubble" id="bubble">Bonjour. Je suis Gérard, la machine. Je vois tout.</div>
+      <div class="gauge">
+        <div class="sec-head"><span class="eyebrow">Santé de Gérard</span><span class="num" id="healthTxt">–</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="healthFill" style="width:50%"></div></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><b id="kWeek">0</b><span>tasses cette semaine</span></div>
+        <div class="kpi"><b id="kStock">0</b><span>tasses en réserve (estim.)</span></div>
+        <div class="kpi"><b id="kClean">–</b><span>depuis le dernier nettoyage</span></div>
+        <div class="kpi"><b id="kDescale">–</b><span>tasses depuis le détartrage</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="counter" aria-label="Déclarer une action">
+    <div class="eyebrow">1 · Qui es-tu, buveur ?</div>
+    <div class="who" id="who"></div>
+    <div class="eyebrow">2 · Avoue ton geste</div>
+    <div class="actions">
+      <button class="act" id="aCup" data-act="cup">
+        <svg viewBox="0 0 48 48"><g class="steam" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6c-2 3 2 5 0 8"/><path d="M24 4c-2 3 2 5 0 8"/><path d="M30 6c-2 3 2 5 0 8"/></g><path d="M10 18h26v12a10 10 0 0 1-10 10h-6a10 10 0 0 1-10-10z" fill="var(--crema)" stroke="currentColor" stroke-width="2.5"/><path d="M36 21h3a5 5 0 0 1 0 10h-4" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="19" cy="27" r="1.6" fill="currentColor"/><circle cx="27" cy="27" r="1.6" fill="currentColor"/><path d="M20 32q3 3 6 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <strong>J'ai bu un café</strong><small>+2 XP · sauf si tu as des dettes</small>
+      </button>
+      <div class="act" role="group" aria-label="J'ai acheté du café">
+        <svg viewBox="0 0 48 48"><path d="M12 10h24l3 32H9z" fill="var(--mocha)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 10l4-5h16l4 5" fill="var(--crema)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><ellipse cx="24" cy="26" rx="6" ry="8" fill="var(--crema)"/><path d="M24 18q-3 8 0 16" fill="none" stroke="var(--mocha)" stroke-width="2"/></svg>
+        <strong>J'ai acheté du café</strong>
+        <div class="buy-pick"><button data-act="buy" data-qty="250">250 g</button><button data-act="buy" data-qty="500">500 g</button><button data-act="buy" data-qty="1000">1 kg</button></div>
+      </div>
+      <button class="act" data-act="clean">
+        <svg viewBox="0 0 48 48"><path d="M30 6l6 6-14 14-6-6z" fill="var(--crema)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M16 20l-8 8 4 4 2-2 2 4 4-2-2-4 4-2" fill="var(--paper)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><g fill="var(--cherry)"><path d="M36 30l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z"/><path d="M10 8l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></g></svg>
+        <strong>J'ai nettoyé</strong><small>bac à marc, buses · +25 XP</small>
+      </button>
+      <button class="act" data-act="descale">
+        <svg viewBox="0 0 48 48"><path d="M19 6h10v10l9 20a4 4 0 0 1-4 6H14a4 4 0 0 1-4-6l9-20z" fill="var(--paper)" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M13 30h22l3 6a4 4 0 0 1-4 6H14a4 4 0 0 1-4-6z" fill="var(--leaf)"/><circle cx="20" cy="34" r="2" fill="var(--paper)"/><circle cx="28" cy="37" r="1.5" fill="var(--paper)"/><circle cx="26" cy="24" r="1.3" fill="currentColor"/></svg>
+        <strong>J'ai détartré</strong><small>la quête ultime · +80 XP</small>
+      </button>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="section">
+      <div class="sec-head"><h2>Le classement</h2><span class="eyebrow">1 tasse = 7 g de café</span></div>
+      <div class="board" id="board"></div>
+      <form class="add-form card" id="addForm">
+        <span class="eyebrow" style="flex-basis:100%">Recruter un nouveau buveur</span>
+        <input type="text" id="newName" maxlength="24" placeholder="Prénom du collègue" autocomplete="off" required>
+        <button class="btn" type="submit">Ajouter</button>
+      </form>
+    </section>
+
+    <aside class="section">
+      <div class="card">
+        <div class="sec-head"><h2>La roue de la corvée</h2></div>
+        <p style="margin:0;font-size:.85rem;color:var(--ink-soft)">Désigne qui nettoie Gérard. Légèrement truquée : plus tu as de dettes ou de jours sans éponge, plus tu as de chances de gagner.</p>
+        <div class="wheel-wrap"><div class="pointer"></div><svg viewBox="0 0 200 200"><g id="wheel"></g><circle cx="100" cy="100" r="14" fill="var(--ink)"/></svg></div>
+        <button class="btn" id="spin">Faire tourner la roue</button>
+        <div class="verdict" id="verdict" aria-live="polite"></div>
+      </div>
+      <div class="card">
+        <div class="sec-head"><h2>Le journal</h2><span class="eyebrow">rien n'échappe à Gérard</span></div>
+        <ul class="log" id="log"></ul>
+      </div>
+    </aside>
+  </div>
+
+  <section class="games" aria-label="Salle de jeux">
+    <div class="sec-head"><h2>La salle de jeux</h2><span class="eyebrow">défoulement officiel, approuvé par Gérard</span></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="wall">Le mur de la honte</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="catch">Attrape-grains</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="crema">La crema parfaite</button>
+    </div>
+
+    <div class="panel" id="tab-wall" role="tabpanel">
+      <div class="game-head"><h3>Le mur de la honte</h3><span class="records" id="wallRec"></span></div>
+      <p>Les buveurs en dette de café ou fâchés avec l'éponge sont affichés ici. Clique sur une affiche pour leur jeter un grain. Les grains reçus sont comptés pour toute l'équipe.</p>
+      <div class="wall" id="wall"></div>
+      <div class="caption" id="wallCaption" aria-live="polite"></div>
+    </div>
+
+    <div class="panel" id="tab-catch" role="tabpanel" hidden>
+      <div class="game-head"><h3>Attrape-grains</h3><span class="records" id="catchRec"></span></div>
+      <p>30 secondes pour attraper un maximum de grains avec ta tasse (souris, doigt ou flèches). Grain doré : +5. Capsule de déca : −3 et la honte.</p>
+      <div class="hud"><span id="catchScore">Score 0</span><span id="catchTime">30 s</span></div>
+      <div class="arena" id="arena"><canvas id="catchCanvas" width="800" height="320" aria-label="Zone de jeu Attrape-grains"></canvas>
+        <div class="overlay" id="catchOverlay"><strong>Attrape-grains</strong><span id="catchMsg">Gérard lâche ses réserves. Sauve ce qui peut l'être.</span><button class="btn" id="catchStart" style="background:#D9A066;color:#2A1810">Jouer</button></div>
+      </div>
+    </div>
+
+    <div class="panel" id="tab-crema" role="tabpanel" hidden>
+      <div class="game-head"><h3>La crema parfaite</h3><span class="records" id="cremaRec"></span></div>
+      <p>Le café monte. Clique sur « Stop » (ou barre d'espace) quand il est dans la zone verte. 5 tasses, 100 points max chacune. Ça déborde : zéro, et Gérard pleure.</p>
+      <div class="crema-zone">
+        <div class="glass" aria-hidden="true"><div class="target" id="cremaTarget"></div><div class="fill" id="cremaFill"></div></div>
+        <div class="crema-side">
+          <div class="rounds" id="cremaRounds"></div>
+          <div class="caption" id="cremaCaption" aria-live="polite" style="text-align:left">Prêt à servir ?</div>
+          <button class="btn big" id="cremaBtn">Servir</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="card rules">
+    <div><b>Solde</b> = café acheté ÷ 7 g − tasses bues. Positif : tu es mécène. Négatif : vampire en devenir.</div>
+    <div><b>XP</b> : tasse +2, achat +15 par 100 g, nettoyage +25, détartrage +80. Dette au-delà de 15 tasses : chaque café coûte −5 XP.</div>
+    <div><b>Photos</b> : clique sur une tasse du classement pour y mettre une image. Elle est partagée avec toute l'équipe.</div>
+    <div><b>Gérard</b> perd de la santé à chaque jour sans nettoyage et à chaque tasse. Un détartrage tous les ~300 cafés.</div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="photoInput" accept="image/*" hidden>
+
+<script>
+/* =====================================================================
+   RÉGLAGES — à remplir une fois (voir README.md)
+   ===================================================================== */
+// Collez ici la configuration de votre projet Firebase (Console Firebase > Paramètres du projet > Vos applications > Web)
+const FIREBASE_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  appId: ""
+};
+// Nom de votre équipe : choisissez quelque chose de difficile à deviner (lettres, chiffres, tirets)
+const TEAM = "comptoir-a-changer";
+// Nombre de jours d'historique chargés pour le journal et les badges (les totaux, eux, sont permanents)
+const HISTORY_DAYS = 60;
+const G_PER_CUP = 7;
+const COLORS = ["#C2372C","#D9A066","#5F7F34","#3E6C8C","#8E4C9E","#E07A3A","#2A1810"];
+const LEVELS = [
+  [0,"Stagiaire décaféiné"],[100,"Apprenti moulinet"],[250,"Barista du lundi matin"],
+  [500,"Torréfacteur assermenté"],[900,"Sommelier de l'arabica"],[1500,"Grand prêtre du percolateur"],[2500,"Légende caféinée"]
+];
+const DAY = 864e5;
+let state = { players:{}, events:[], avatars:{}, games:{}, meta:{} };
+let demo = true, me = null, toastTimer = null;
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+/* ---------- Illustrations ---------- */
+let svgUid = 0;
+function mugSVG(color, mood, img){
+  if (img){
+    const id = "cup" + (++svgUid);
+    const extra = mood==="sad" ? `<path d="M52 20q4 6 0 9q-4-3 0-9z" fill="#7FB6D9" stroke="#2A1810" stroke-width="1.5"/>`
+      : mood==="star" ? `<path d="M8 10l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z" fill="#E7B27A" stroke="#2A1810" stroke-width="1"/>` : "";
+    return `<svg viewBox="0 0 64 64" class="face"><defs><clipPath id="${id}"><path d="M12 18h40v24a14 14 0 0 1-14 14H26a14 14 0 0 1-14-14z"/></clipPath></defs>
+    <g class="steam" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-linecap="round"><path d="M24 4c-2 3 2 5 0 8"/><path d="M32 2c-2 3 2 5 0 8"/><path d="M40 4c-2 3 2 5 0 8"/></g>
+    <path d="M50 26h3a7 7 0 0 1 0 14h-4" fill="none" stroke="#2A1810" stroke-width="3"/>
+    <rect x="12" y="16" width="40" height="40" fill="${color}"/>
+    <image href="${img}" x="12" y="16" width="40" height="40" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>
+    <path d="M12 18h40v24a14 14 0 0 1-14 14H26a14 14 0 0 1-14-14z" fill="none" stroke="#2A1810" stroke-width="3"/>
+    <ellipse cx="32" cy="18" rx="20" ry="4" fill="#5A3420" stroke="#2A1810" stroke-width="3"/>${extra}</svg>`;
+  }
+  const eyes = mood==="sad"
+    ? `<path d="M21 31l5 2M43 31l-5 2" stroke="#2A1810" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="35" r="2.2" fill="#2A1810"/><circle cx="40" cy="35" r="2.2" fill="#2A1810"/>`
+    : mood==="star"
+    ? `<path d="M24 31l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-1.9 2.8-.3zM40 31l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-1.9 2.8-.3z" fill="#2A1810"/>`
+    : `<circle cx="24" cy="34" r="2.6" fill="#2A1810"/><circle cx="40" cy="34" r="2.6" fill="#2A1810"/>`;
+  const mouth = mood==="sad" ? `<path d="M27 45q5-4 10 0" fill="none" stroke="#2A1810" stroke-width="2.5" stroke-linecap="round"/>`
+    : `<path d="M26 41q6 6 12 0" fill="#2A1810" stroke="#2A1810" stroke-width="2" stroke-linecap="round"/>`;
+  const sweat = mood==="sad" ? `<path d="M50 24q3 5 0 7q-3-2 0-7z" fill="#7FB6D9"/>` : "";
+  return `<svg viewBox="0 0 64 64"><g class="steam" fill="none" stroke="var(--ink-soft)" stroke-width="2" stroke-linecap="round"><path d="M24 4c-2 3 2 5 0 8"/><path d="M32 2c-2 3 2 5 0 8"/><path d="M40 4c-2 3 2 5 0 8"/></g>
+  <path d="M50 26h3a7 7 0 0 1 0 14h-4" fill="none" stroke="#2A1810" stroke-width="3"/>
+  <path d="M12 18h40v24a14 14 0 0 1-14 14H26a14 14 0 0 1-14-14z" fill="${color}" stroke="#2A1810" stroke-width="3"/>
+  <ellipse cx="32" cy="18" rx="20" ry="4" fill="#5A3420" stroke="#2A1810" stroke-width="3"/>
+  <circle cx="20" cy="40" r="3" fill="#F49B8B" opacity=".6"/><circle cx="44" cy="40" r="3" fill="#F49B8B" opacity=".6"/>
+  ${eyes}${mouth}${sweat}</svg>`;
+}
+function machineSVG(h){
+  const face = h>70
+    ? `<circle cx="80" cy="66" r="6" fill="#F7E7C6"/><circle cx="120" cy="66" r="6" fill="#F7E7C6"/><path d="M84 82q16 14 32 0" fill="none" stroke="#F7E7C6" stroke-width="5" stroke-linecap="round"/>`
+    : h>40
+    ? `<circle cx="80" cy="68" r="6" fill="#F7E7C6"/><circle cx="120" cy="68" r="6" fill="#F7E7C6"/><path d="M86 86h28" stroke="#F7E7C6" stroke-width="5" stroke-linecap="round"/>`
+    : h>15
+    ? `<path d="M72 60l14 6M128 60l-14 6" stroke="#F7E7C6" stroke-width="5" stroke-linecap="round"/><circle cx="80" cy="72" r="5" fill="#F7E7C6"/><circle cx="120" cy="72" r="5" fill="#F7E7C6"/><path d="M86 92q14-10 28 0" fill="none" stroke="#F7E7C6" stroke-width="5" stroke-linecap="round"/>`
+    : `<path d="M73 62l14 12M87 62l-14 12M113 62l14 12M127 62l-14 12" stroke="#F7E7C6" stroke-width="5" stroke-linecap="round"/><path d="M84 94q16-12 32 0" fill="none" stroke="#F7E7C6" stroke-width="5" stroke-linecap="round"/>`;
+  const flies = h<=40 ? `<g fill="var(--ink)"><circle cx="30" cy="40" r="3"/><circle cx="174" cy="28" r="3"/></g><g fill="none" stroke="var(--ink-soft)" stroke-width="1.5"><path d="M26 36q4-6 8 0M170 24q4-6 8 0"/></g>` : "";
+  const stains = h<=60 ? `<g fill="#5A3420" opacity=".55"><circle cx="60" cy="150" r="5"/><circle cx="146" cy="160" r="4"/><circle cx="70" cy="190" r="3"/></g>` : "";
+  return `<svg viewBox="0 0 200 250">
+  <ellipse cx="100" cy="238" rx="80" ry="8" fill="var(--shadow)"/>
+  <rect x="34" y="20" width="132" height="210" rx="22" fill="#B23A2E" stroke="var(--ink)" stroke-width="4"/>
+  <rect x="34" y="20" width="132" height="34" rx="18" fill="#8E2A21" stroke="var(--ink)" stroke-width="4"/>
+  <rect x="58" y="44" width="84" height="64" rx="14" fill="#2A1810" stroke="var(--ink)" stroke-width="4"/>
+  ${face}
+  <circle cx="62" cy="126" r="7" fill="#D9A066" stroke="var(--ink)" stroke-width="3"/><circle cx="84" cy="126" r="7" fill="#F7E7C6" stroke="var(--ink)" stroke-width="3"/>
+  <rect x="112" y="120" width="34" height="12" rx="6" fill="#F7E7C6" stroke="var(--ink)" stroke-width="3"/>
+  <rect x="78" y="140" width="44" height="18" rx="4" fill="#8E2A21" stroke="var(--ink)" stroke-width="3"/>
+  <rect x="94" y="158" width="12" height="10" fill="#555" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M100 168v16" stroke="#5A3420" stroke-width="4" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" from="8" to="0" dur=".5s" repeatCount="indefinite"/></path>
+  <path d="M82 186h36v16a10 10 0 0 1-10 10h-16a10 10 0 0 1-10-10z" fill="#F7E7C6" stroke="var(--ink)" stroke-width="3"/>
+  <rect x="56" y="212" width="88" height="10" rx="4" fill="#555" stroke="var(--ink)" stroke-width="3"/>
+  ${stains}${flies}</svg>`;
+}
+
+/* ---------- Calculs ---------- */
+const moodOf = p => p.balance<-5 ? "sad" : p.balance>=20 ? "star" : "happy";
+const faceOf = (p, mood) => mugSVG(p.color, mood || "happy", state.avatars[p.id]);
+const CAM = `<svg viewBox="0 0 16 16"><path d="M2 5h3l1.5-2h3L11 5h3v8H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>`;
+const XP = { cup: 2, tax: -5, taxDebt: 15, per100g: 15, clean: 25, descale: 80 };
+function xpFor(p, type, qty){
+  if (type === "cup"){ const debt = (p.cups||0) - (p.grams||0)/G_PER_CUP; return debt > XP.taxDebt ? XP.tax : XP.cup; }
+  if (type === "buy") return Math.round(qty/100*XP.per100g);
+  return type === "clean" ? XP.clean : type === "descale" ? XP.descale : 0;
+}
+function compute(){
+  const now = Date.now();
+  const P = {};
+  for (const [id,p] of Object.entries(state.players)) P[id] = {id, name:p.name, color:p.color, cups:p.cups||0, grams:p.grams||0, cleans:p.cleans||0, descales:p.descales||0, xp:p.xp||0, lastClean:p.lastClean||0, early:0, maxDay:0, days:{}};
+  for (const e of state.events){ // historique récent : badges de rythme
+    const p = P[e.player]; if (!p || e.type !== "cup") continue;
+    const d = new Date(e.at), k = d.toDateString();
+    p.days[k] = (p.days[k]||0) + 1; p.maxDay = Math.max(p.maxDay, p.days[k]);
+    if (d.getHours() < 8) p.early++;
+  }
+  const list = Object.values(P).map(p=>{
+    p.xp = Math.max(0,p.xp);
+    p.balance = p.grams/G_PER_CUP - p.cups;
+    let li = 0; LEVELS.forEach((l,i)=>{ if (p.xp>=l[0]) li=i; });
+    p.level = li+1; p.title = LEVELS[li][1];
+    const next = LEVELS[li+1]; p.prog = next ? (p.xp-LEVELS[li][0])/(next[0]-LEVELS[li][0]) : 1;
+    p.toNext = next ? next[0]-p.xp : 0;
+    p.status = p.balance>=20 ? ["good","Mécène"] : p.balance>=-5 ? ["ok","Réglo"] : p.balance>=-25 ? ["bad","Pique-assiette"] : ["bad","Vampire du percolateur"];
+    const b=[];
+    if (p.cups>=1) b.push("Premier sang (noir)");
+    if (p.grams>=1000) b.push("Mécène du kilo");
+    if (p.cleans>=5) b.push("Brosse d'or");
+    if (p.descales>=1) b.push("Chimiste du calcaire");
+    if (p.maxDay>=5) b.push("Insomniaque certifié");
+    if (p.early>=3) b.push("Lève-tôt hagard");
+    if (p.balance<-25) b.push("Vampire officiel");
+    if (p.cups>=10 && p.cleans===0 && p.descales===0) b.push("Allergique à l'éponge");
+    p.badges=b;
+    p.daysNoClean = p.lastClean ? Math.floor((now-p.lastClean)/DAY) : 99;
+    return p;
+  }).sort((a,b)=>b.xp-a.xp);
+  const m = state.meta || {};
+  const weekStart = (()=>{const d=new Date();const wd=(d.getDay()+6)%7;d.setHours(0,0,0,0);return d.getTime()-wd*DAY;})();
+  const totalG = list.reduce((s,p)=>s+p.grams,0), totalC = list.reduce((s,p)=>s+p.cups,0);
+  const daysSinceClean = m.lastClean ? (now-m.lastClean)/DAY : null;
+  const cupsSinceClean = Math.max(0, totalC - (m.lastClean ? (m.cupsAtClean||0) : 0));
+  const cupsSinceDescale = Math.max(0, totalC - (m.lastDescale ? (m.cupsAtDescale||0) : 0));
+  let health = 100 - (daysSinceClean===null?60:daysSinceClean*10) - cupsSinceClean*1.2 - Math.max(0,cupsSinceDescale-250)*0.3;
+  if (!totalC && !m.lastClean) health = 72;
+  health = Math.round(Math.max(0,Math.min(100,health)));
+  return { list, health, week: state.events.filter(e=>e.type==="cup"&&e.at>=weekStart).length,
+    stock: Math.round(totalG/G_PER_CUP - totalC), daysSinceClean, cupsSinceDescale, hasDescale:!!m.lastDescale, totalC };
+}
+
+const LINES = {
+  great:["Je brille comme une cafetière de pub. Merci.","Mes buses sont propres. Je me sens jeune.","Je pourrais faire un ristretto les yeux fermés."],
+  ok:["Ça va. Un petit coup d'éponge ne me ferait pas de mal.","Mon bac à marc commence à avoir une personnalité.","Je tiens bon. Pour l'instant."],
+  bad:["Il y a quelque chose qui vit dans mon bac à marc. Il a un nom.","Je crache du calcaire. Comme un dragon, mais triste.","Quelqu'un ? Une éponge ? N'importe qui ?"],
+  dead:["Je rédige mon testament. Tout ira au grille-pain.","Je ne fais plus du café. Je fais de la soupe de regrets.","Appelez mon avocat. Ou un détartrant."],
+};
+const ACT_TXT = {
+  cup:[n=>`${n} a bu un café. Gérard prend note.`,n=>`${n} recharge ses batteries humaines.`,n=>`${n} a encore frappé.`],
+  buy:[(n,q)=>`${n} a ramené ${q} g de café. Héros.`,(n,q)=>`${n} nourrit la tribu : ${q} g.`,(n,q)=>`${n} a payé sa tournée (${q} g).`],
+  clean:[n=>`${n} a nettoyé Gérard. Gérard pleure de joie.`,n=>`${n} a vidé le bac à marc sans vomir.`,n=>`${n} a sorti l'éponge sacrée.`],
+  descale:[n=>`${n} a détartré Gérard. Une statue est en commande.`,n=>`${n} a vaincu le calcaire en duel.`],
+};
+
+/* ---------- Rendu ---------- */
+function render(){
+  const c = compute();
+  const tier = c.health>70?"great":c.health>40?"ok":c.health>15?"bad":"dead";
+  document.getElementById("machineBox").innerHTML = machineSVG(c.health);
+  const bub = document.getElementById("bubble");
+  if (bub.dataset.tier!==tier){ bub.dataset.tier=tier; bub.textContent = "« "+pick(LINES[tier])+" »"; }
+  document.getElementById("healthTxt").textContent = c.health+" %";
+  const f = document.getElementById("healthFill");
+  f.style.width = c.health+"%";
+  f.style.background = c.health>70?"var(--leaf)":c.health>40?"var(--crema)":"var(--cherry)";
+  document.getElementById("kWeek").textContent = c.week;
+  document.getElementById("kStock").textContent = c.stock;
+  document.getElementById("kClean").textContent = c.daysSinceClean===null ? "jamais" : c.daysSinceClean<1 ? "aujourd'hui" : Math.floor(c.daysSinceClean)+" j";
+  document.getElementById("kDescale").textContent = c.hasDescale ? c.cupsSinceDescale : "jamais";
+
+  // Qui es-tu
+  const who = document.getElementById("who");
+  if (me && !state.players[me]) me = null;
+  who.innerHTML = c.list.map(p=>`<button class="who-chip" data-me="${esc(p.id)}" aria-pressed="${p.id===me}">${faceOf(p)}${esc(p.name)}</button>`).join("")
+    + `<button class="who-chip add" data-focus-add>+ Nouveau</button>`;
+  document.querySelectorAll(".act, .buy-pick button").forEach(b=>{ if (b.tagName==="BUTTON") b.disabled = !me; });
+
+  // Classement
+  const board = document.getElementById("board");
+  if (!c.list.length){
+    board.innerHTML = `<div class="card empty">${mugSVG("#D9A066","sad")}<b>Le comptoir est vide.</b><span>Ajoute le premier buveur ci-dessous, puis choisis ton nom en haut pour déclarer tes cafés.</span></div>`;
+  } else {
+    board.innerHTML = c.list.map((p,i)=>{
+      const mood = moodOf(p);
+      const bal = Math.round(p.balance);
+      return `<article class="ticket ${p.id===me?"me":""}">
+        <div class="rank">${i+1}</div>
+        <div class="avatar-wrap"><button class="avatar" data-photo="${esc(p.id)}" title="Changer l'image de ${esc(p.name)}" aria-label="Changer l'image de ${esc(p.name)}">${faceOf(p,mood)}</button><span class="cam">${CAM}</span>${state.avatars[p.id]?`<button class="unphoto" data-unphoto="${esc(p.id)}" title="Retirer la photo et remettre la tasse">× photo</button>`:""}</div>
+        <div class="t-main">
+          <div class="t-top"><h3>${esc(p.name)}</h3><span class="lvl">niv. ${p.level} · ${p.title}</span><span class="chip ${p.status[0]}">${p.status[1]}</span></div>
+          <div class="xpbar" title="${p.xp} XP"><i style="width:${Math.round(p.prog*100)}%"></i></div>
+          <div class="t-stats"><span><b>${p.xp}</b> XP${p.toNext?` · encore ${p.toNext}`:""}</span><span>solde <b>${bal>0?"+":""}${bal}</b> tasses</span><span><b>${p.cups}</b> bues</span><span><b>${(p.grams/1000).toLocaleString("fr-FR",{maximumFractionDigits:2})}</b> kg achetés</span><span><b>${p.cleans+p.descales}</b> nettoyages</span></div>
+          ${p.badges.length?`<div class="badges">${p.badges.map(b=>`<span class="badge">${b}</span>`).join("")}</div>`:""}
+        </div>
+        <button class="del" data-del="${esc(p.id)}" aria-label="Retirer ${esc(p.name)}">retirer</button>
+      </article>`;
+    }).join("");
+  }
+
+  // Journal
+  const log = document.getElementById("log");
+  const recent = [...state.events].sort((a,b)=>b.at-a.at).slice(0,14);
+  log.innerHTML = recent.length ? recent.map(e=>{
+    const p = state.players[e.player]; if (!p) return "";
+    const fns = ACT_TXT[e.type]||ACT_TXT.cup; const fn = fns[(e.at>>3)%fns.length];
+    const mine = e.player===me && !e.manual && Date.now()-e.at < 10*60e3;
+    return `<li><span class="dot" style="background:${p.color}"></span><span>${esc(fn(p.name,e.qty))}${mine?`<button class="undo" data-undo="${esc(e.id)}">annuler</button>`:""}</span><span class="when">${ago(e.at)}</span></li>`;
+  }).join("") : `<li><span></span><span style="color:var(--ink-soft)">Aucun crime pour l'instant. Gérard attend.</span><span></span></li>`;
+
+  drawWheel(c.list);
+  renderGames(c);
+}
+function ago(t){
+  const m = Math.floor((Date.now()-t)/60e3);
+  if (m<1) return "à l'instant"; if (m<60) return m+" min";
+  const h = Math.floor(m/60); if (h<24) return h+" h";
+  return Math.floor(h/24)+" j";
+}
+
+/* ---------- Roue ---------- */
+let wheelRot = 0, wheelIds = "";
+function drawWheel(list){
+  const ids = list.map(p=>p.id+p.color+p.name).join("|");
+  if (ids===wheelIds) return; wheelIds = ids;
+  const g = document.getElementById("wheel");
+  if (!list.length){ g.innerHTML = `<circle cx="100" cy="100" r="96" fill="var(--line)" stroke="var(--ink)" stroke-width="3"/>`; return; }
+  const n = list.length, a = 2*Math.PI/n;
+  g.innerHTML = list.map((p,i)=>{
+    const a0 = i*a - Math.PI/2, a1 = a0+a;
+    const x0=100+96*Math.cos(a0), y0=100+96*Math.sin(a0), x1=100+96*Math.cos(a1), y1=100+96*Math.sin(a1);
+    const mid = a0+a/2, tx=100+60*Math.cos(mid), ty=100+60*Math.sin(mid);
+    const path = n===1 ? `<circle cx="100" cy="100" r="96" fill="${p.color}" stroke="#2A1810" stroke-width="3"/>`
+      : `<path d="M100 100L${x0} ${y0}A96 96 0 ${a>Math.PI?1:0} 1 ${x1} ${y1}z" fill="${p.color}" stroke="#2A1810" stroke-width="3"/>`;
+    const light = ["#D9A066"].includes(p.color);
+    return path + `<text x="${tx}" y="${ty}" fill="${light?"#2A1810":"#FBF4E8"}" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="${n>6?10:13}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${mid*180/Math.PI+90} ${tx} ${ty})">${esc(p.name.slice(0,10))}</text>`;
+  }).join("");
+}
+const VERDICTS = [
+  n=>`${n} est condamné(e) au bac à marc. Pas de recours possible.`,
+  n=>`La roue a parlé : ${n}, l'éponge t'attend.`,
+  n=>`${n} ! Gérard compte sur toi. Gérard a confiance. Ne déçois pas Gérard.`,
+  n=>`Félicitations ${n}, tu gagnes un séjour tout compris au-dessus de l'évier.`,
+];
+document.getElementById("spin").addEventListener("click", ()=>{
+  const list = compute().list; if (list.length<2){ toast("Il faut au moins deux suspects pour un procès équitable."); return; }
+  const w = list.map(p=>1 + Math.min(14,p.daysNoClean) + Math.max(0,-p.balance)/5);
+  let r = Math.random()*w.reduce((s,x)=>s+x,0), idx=0;
+  for (; idx<w.length; idx++){ r-=w[idx]; if (r<=0) break; }
+  idx = Math.min(idx,list.length-1);
+  const seg = 360/list.length, target = 360 - (idx*seg + seg/2);
+  wheelRot = wheelRot - (wheelRot%360) + 360*5 + target + (Math.random()-.5)*seg*.6;
+  const g = document.getElementById("wheel");
+  g.style.transform = `rotate(${wheelRot}deg)`;
+  const v = document.getElementById("verdict"); v.textContent = "Délibération en cours…";
+  const btn = document.getElementById("spin"); btn.disabled = true;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(()=>{ v.textContent = pick(VERDICTS)(list[idx].name); btn.disabled=false; beans(14); }, reduced?50:3700);
+});
+
+/* ---------- Effets ---------- */
+function toast(html){
+  const t = document.getElementById("toast"); t.innerHTML = html; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 3200);
+}
+function beans(n){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let i=0;i<n;i++){
+    const b = document.createElement("div"); b.className="bean";
+    b.style.left = Math.random()*100+"vw"; b.style.animationDuration = (1.6+Math.random()*1.6)+"s";
+    b.style.animationDelay = Math.random()*.4+"s";
+    document.body.appendChild(b); setTimeout(()=>b.remove(), 4000);
+  }
+}
+
+/* ---------- Données : Firebase (Firestore, temps réel) ---------- */
+const ACT_FR = { cup:"Café bu", buy:"Achat", clean:"Nettoyage", descale:"Détartrage" };
+const keyOf = n => String(n||"").trim().toLowerCase();
+const cleanName = n => String(n||"").normalize("NFC").replace(/[^\p{L}\p{N} '\-]/gu,"").replace(/\s+/g," ").trim().slice(0,24);
+const colorOf = n => { let h=0; for (const c of keyOf(n)) h=(h*31+c.codePointAt(0))>>>0; return COLORS[h % (COLORS.length-1)]; };
+const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const CONFIGURED = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId);
+let fs = null, FV = null, teamRef = null, live = { players:false, events:false, games:false, meta:false }, syncErr = "", connecting = false;
+const col = n => teamRef.collection(n);
+
+function startFirebase(){
+  if (!CONFIGURED || !window.firebase){ paintSync(); return; }
+  connecting = true; paintSync();
+  try {
+    const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+    fs = firebase.firestore(app); FV = firebase.firestore.FieldValue;
+    teamRef = fs.collection("equipes").doc(TEAM.replace(/[^A-Za-z0-9_-]/g,"-") || "comptoir");
+  } catch(e){ connecting = false; syncErr = "Configuration Firebase invalide : " + e.message; paintSync(); return; }
+  firebase.auth().signInAnonymously().then(()=>{
+    const fail = what => e => { syncErr = `Lecture ${what} impossible (${e.code || e.message}). Vérifiez les règles de sécurité Firestore.`; paintSync(); };
+    col("buveurs").onSnapshot(s=>{
+      const players = {}, avatars = {};
+      s.forEach(d=>{ const v = d.data(); players[d.id] = v; if (v.avatar) avatars[d.id] = v.avatar; });
+      state.players = players; state.avatars = avatars; live.players = true; goLive();
+    }, fail("des buveurs"));
+    col("evenements").where("at", ">=", Date.now() - HISTORY_DAYS*DAY).orderBy("at").onSnapshot(s=>{
+      state.events = s.docs.map(d=>({ id: d.id, ...d.data() })); live.events = true; goLive();
+    }, fail("du journal"));
+    col("jeux").onSnapshot(s=>{
+      const games = {}; s.forEach(d=>{ const v = d.data(); games[d.id] = { grains: v.grains || {}, records: v.records || {} }; });
+      if (me){ const g = games[me] || (games[me] = { grains:{}, records:{} }); for (const [t,n] of Object.entries(pendingGames.grains)) g.grains[t] = (g.grains[t]||0) + n; }
+      state.games = games; live.games = true; goLive();
+    }, fail("des jeux"));
+    teamRef.onSnapshot(d=>{ state.meta = d.exists ? d.data() : {}; live.meta = true; goLive(); }, fail("de l'équipe"));
+  }).catch(e=>{
+    connecting = false;
+    syncErr = e.code === "auth/operation-not-allowed" || e.code === "auth/admin-restricted-operation"
+      ? "Activez la connexion « Anonyme » dans Firebase (Authentication > Méthodes de connexion)."
+      : "Connexion à Firebase impossible (" + (e.code || e.message) + ").";
+    paintSync();
+  });
+}
+function goLive(){
+  if (demo && live.players && live.events){ demo = false; connecting = false; syncErr = ""; me = null; try { me = localStorage.getItem("cc-me"); } catch(e) {} }
+  if (!demo) render();
+  paintSync();
+}
+
+/* ---------- Panneau de connexion ---------- */
+function paintSync(){
+  const msg = document.getElementById("syncMsg"), act = document.getElementById("syncActions");
+  if (!CONFIGURED){
+    msg.innerHTML = `<b>Mode démo</b>La page n'est pas encore reliée à Firebase : renseignez <code>FIREBASE_CONFIG</code> en haut du fichier (voir le README). Les collègues ci-dessous sont des exemples.`;
+    act.innerHTML = `<span class="pill off">Non configurée</span>`; return;
+  }
+  if (!window.firebase){
+    msg.innerHTML = `<b>Hors ligne</b>Le module Firebase n'a pas pu se charger. Vérifiez la connexion internet puis rechargez la page.`;
+    act.innerHTML = `<span class="pill err">Hors ligne</span>`; return;
+  }
+  if (syncErr){
+    msg.innerHTML = `<b>Gérard a un souci de paperasse</b>${esc(syncErr)}`;
+    act.innerHTML = `<span class="pill err">Erreur</span>`; return;
+  }
+  if (demo){
+    msg.innerHTML = `<b>Connexion au comptoir…</b>Gérard ouvre son registre partagé.`;
+    act.innerHTML = `<span class="pill busy">Connexion</span>`; return;
+  }
+  const online = navigator.onLine !== false;
+  msg.innerHTML = `<b>Comptoir « ${esc(TEAM)} »</b>${Object.keys(state.players).length} buveur(s) · ${online ? "synchronisé en direct avec toute l'équipe" : "hors ligne : vos actions partiront dès le retour du réseau"}`;
+  act.innerHTML = online ? `<span class="pill on">En direct</span>` : `<span class="pill busy">Hors ligne</span>`;
+}
+addEventListener("online", paintSync); addEventListener("offline", paintSync);
+
+/* ---------- Photos (petite image enregistrée dans la fiche du buveur) ---------- */
+async function squareJpeg(file){
+  const bmp = await createImageBitmap(file);
+  const size = 160, c = document.createElement("canvas"); c.width = c.height = size;
+  const g = c.getContext("2d"); const sc = Math.max(size/bmp.width, size/bmp.height);
+  const w = bmp.width*sc, h = bmp.height*sc; g.drawImage(bmp, (size-w)/2, (size-h)/2, w, h);
+  return c.toDataURL("image/jpeg", .8);
+}
+let photoTarget = null;
+document.getElementById("photoInput").addEventListener("change", async e=>{
+  const file = e.target.files[0]; e.target.value = ""; const k = photoTarget; if (!file || !k || !state.players[k]) return;
+  try {
+    const url = await squareJpeg(file);
+    if (demo){ state.avatars[k] = url; render(); }
+    else await col("buveurs").doc(k).update({ avatar: url });
+    toast(`Nouvelle tête pour ${esc(state.players[k].name)}. Gérard approuve (il n'a pas le choix).`); beans(10);
+  } catch(err){ toast("Impossible d'utiliser cette image. Essaie une photo JPG ou PNG."); }
+});
+async function removePhoto(k){
+  try {
+    if (demo){ delete state.avatars[k]; render(); }
+    else await col("buveurs").doc(k).update({ avatar: FV.delete() });
+    toast("Retour à la tasse. Sobre. Élégant.");
+  } catch(e){ toast("Impossible de retirer l'image pour l'instant."); }
+}
+
+/* ---------- Jeux : grains jetés (compteurs) + records ---------- */
+let pendingGames = { grains:{}, records:{} }, flushTimer = null;
+function myGames(){ return state.games[me] || (state.games[me] = { grains:{}, records:{} }); }
+function addGrain(target){
+  myGames().grains[target] = (myGames().grains[target]||0) + 1;
+  pendingGames.grains[target] = (pendingGames.grains[target]||0) + 1; scheduleFlush();
+}
+function setRecord(game, score){
+  const g = myGames(); const old = g.records[game] || 0;
+  if (score > old){ g.records[game] = score; pendingGames.records[game] = Math.max(pendingGames.records[game]||0, score); scheduleFlush(); return true; }
+  return false;
+}
+function scheduleFlush(){ clearTimeout(flushTimer); flushTimer = setTimeout(flushGames, 1200); }
+async function flushGames(){
+  const p = pendingGames; pendingGames = { grains:{}, records:{} };
+  if (demo || !me || !Object.keys(p.grains).length && !Object.keys(p.records).length) return;
+  const data = { buveur: me };
+  if (Object.keys(p.grains).length){ data.grains = {}; for (const [t,n] of Object.entries(p.grains)) data.grains[t] = FV.increment(n); }
+  if (Object.keys(p.records).length) data.records = p.records;
+  try { await col("jeux").doc(me).set(data, { merge: true }); }
+  catch(e){ for (const [t,n] of Object.entries(p.grains)) pendingGames.grains[t] = (pendingGames.grains[t]||0) + n; for (const [t,n] of Object.entries(p.records)) pendingGames.records[t] = Math.max(pendingGames.records[t]||0, n); scheduleFlush(); }
+}
+addEventListener("pagehide", ()=>{ if (Object.keys(pendingGames.grains).length || Object.keys(pendingGames.records).length) flushGames(); });
+const grainsReceived = k => Object.values(state.games).reduce((s,g)=>s + ((g.grains||{})[k]||0), 0);
+function teamRecord(game){
+  let best = null;
+  for (const [k,g] of Object.entries(state.games)){ const v = (g.records||{})[game]; if (v && state.players[k] && (!best || v > best.v)) best = { v, name: state.players[k].name }; }
+  return best;
+}
+function recordLine(game, unit){
+  const b = teamRecord(game), mine = me && state.games[me] && state.games[me].records ? state.games[me].records[game] : 0;
+  return `Record de l'équipe : ${b ? `<b>${b.v}</b> ${unit} par ${esc(b.name)}` : "personne, pour l'instant"}${me ? ` · Ton record : <b>${mine||0}</b>` : ""}`;
+}
+
+/* ---------- Mur de la honte ---------- */
+const SPLAT = `<svg viewBox="0 0 30 30"><path d="M15 3c3 0 3 5 6 5s5-2 6 1-3 4-2 7 4 4 2 7-5 0-7 2-1 5-5 5-2-4-5-4-6 2-7-1 3-4 2-7-4-4-2-7 5 0 6-3 2-5 6-5z" fill="#5A3420" opacity=".85"/><ellipse cx="15" cy="15" rx="4" ry="5.5" fill="#3A2216"/><path d="M15 10q-2 5 0 10" stroke="#D9A066" stroke-width="1.2" fill="none"/></svg>`;
+const BEAN = `<svg viewBox="0 0 16 22"><ellipse cx="8" cy="11" rx="7" ry="10" fill="#5A3420" stroke="#2A1810" stroke-width="1.2"/><path d="M8 3q-3 8 0 16" stroke="#D9A066" stroke-width="1.6" fill="none"/></svg>`;
+const SHAME = [
+  n=>`En plein dans le moka, ${n} !`, n=>`${n} a reçu un expresso balistique.`, n=>`Splash. ${n} sent désormais l'arabica.`,
+  n=>`${n} : grain reçu, dette toujours là.`, n=>`Gérard applaudit avec ses buses.`, n=>`${n} se demande d'où ça vient. (De toi.)`,
+  n=>`Tir certifié pure origine sur ${n}.`, n=>`${n} vient de gagner un masque exfoliant au café.`
+];
+const splats = {}; // key -> [{x,y,r}] (local)
+function wallCrimes(p){
+  const out = [];
+  if (p.balance < -3) out.push(`Dette : ${Math.round(-p.balance)} tasses`);
+  if (p.cups >= 5 && p.cleans + p.descales === 0) out.push("N'a jamais touché l'éponge");
+  else if (p.cups >= 5 && p.daysNoClean >= 14 && p.daysNoClean < 99) out.push(`Pas d'éponge depuis ${p.daysNoClean} j`);
+  return out;
+}
+function wallTargets(c){
+  const scored = c.list.map(p=>({ p, crimes: wallCrimes(p), impl: p.balance + 8*p.cleans + 25*p.descales })).sort((a,b)=>a.impl-b.impl);
+  let t = scored.filter(x=>x.crimes.length).slice(0,6);
+  if (!t.length && scored.length) t = [{ ...scored[0], crimes: ["Rien à se reprocher… Gérard vise quand même le moins impliqué."] }];
+  return t;
+}
+let wallSig = "";
+function renderWall(c){
+  const wall = document.getElementById("wall");
+  const t = wallTargets(c);
+  const sig = t.map(x=>x.p.id+"|"+x.crimes.join(",")+"|"+(state.avatars[x.p.id]||"")).join(";");
+  if (sig !== wallSig){
+    wallSig = sig;
+    wall.innerHTML = t.length ? t.map(x=>`<button class="poster" data-shame="${esc(x.p.id)}" aria-label="Jeter un grain sur ${esc(x.p.name)}">
+      <span class="wanted">RECHERCHÉ</span>${faceOf(x.p,"sad")}<span class="pname">${esc(x.p.name)}</span>
+      <span class="crime">${x.crimes.map(esc).join("<br>")}</span><span class="hits" data-hits="${esc(x.p.id)}"></span>
+      ${(splats[x.p.id]||[]).map(s=>`<span class="splat" style="left:${s.x}px;top:${s.y}px;transform:rotate(${s.r}deg)">${SPLAT}</span>`).join("")}</button>`).join("")
+      : `<div class="empty" style="grid-column:1/-1">${mugSVG("#5F7F34","star")}<b>Mur vide.</b><span>Ajoute des buveurs pour avoir des cibles.</span></div>`;
+  }
+  wall.querySelectorAll("[data-hits]").forEach(el=>{ el.textContent = grainsReceived(el.dataset.hits) + " grains reçus"; });
+  let top = null; for (const k of Object.keys(state.players)){ const n = grainsReceived(k); if (n && (!top || n > top.n)) top = { n, k }; }
+  document.getElementById("wallRec").innerHTML = top ? `Cible préférée : <b>${esc(state.players[top.k].name)}</b> (${top.n} grains)` : "Aucun grain jeté pour l'instant";
+}
+let lastThrow = 0;
+function throwBean(poster, ev){
+  if (!me){ toast("Choisis d'abord qui tu es (en haut) pour avoir des munitions."); return; }
+  const now = performance.now(); if (now - lastThrow < 180) return; lastThrow = now;
+  const k = poster.dataset.shame, rect = poster.getBoundingClientRect();
+  const tx = ev.clientX || rect.left + rect.width/2, ty = ev.clientY || rect.top + rect.height/2;
+  const sx = innerWidth/2 + (Math.random()-.5)*120, sy = innerHeight + 20;
+  const done = () => {
+    poster.classList.remove("hit"); void poster.offsetWidth; poster.classList.add("hit");
+    const s = { x: Math.round(tx - rect.left - 15), y: Math.round(ty - rect.top - 15), r: Math.round(Math.random()*360) };
+    (splats[k] = splats[k] || []).push(s); if (splats[k].length > 14) splats[k].shift();
+    const el = document.createElement("span"); el.className = "splat"; el.style.cssText = `left:${s.x}px;top:${s.y}px;transform:rotate(${s.r}deg)`; el.innerHTML = SPLAT; poster.appendChild(el);
+    addGrain(k); renderWall(compute());
+    const name = state.players[k] ? state.players[k].name : "?";
+    document.getElementById("wallCaption").textContent = k === me ? `Tu te jettes des grains à toi-même. Gérard respecte l'autocritique.` : pick(SHAME)(name);
+  };
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches){ done(); return; }
+  const b = document.createElement("div"); b.className = "flying"; b.innerHTML = BEAN; document.body.appendChild(b);
+  const mx = (sx+tx)/2, my = Math.min(sy, ty) - 140;
+  const a = b.animate([
+    { transform: `translate(${sx}px,${sy}px) rotate(0deg)` },
+    { transform: `translate(${mx}px,${my}px) rotate(400deg)`, offset: .5, easing: "ease-in" },
+    { transform: `translate(${tx-8}px,${ty-11}px) rotate(800deg)` }
+  ], { duration: 420, easing: "ease-out" });
+  a.onfinish = () => { b.remove(); done(); };
+}
+
+/* ---------- Attrape-grains ---------- */
+const CG = { running:false, items:[], x:.5, score:0, t:0, last:0, spawn:0, img:null, imgUrl:"", keys:{} };
+function catchReset(){
+  CG.items = []; CG.score = 0; CG.t = 30; CG.spawn = 0; CG.x = .5; CG.shake = 0;
+  document.getElementById("catchScore").textContent = "Score 0"; document.getElementById("catchTime").textContent = "30 s";
+}
+function catchStart(){
+  if (!me) toast("Astuce : choisis qui tu es pour enregistrer ton record.");
+  const url = me && state.avatars[me];
+  if (url && url !== CG.imgUrl){ CG.img = new Image(); CG.img.src = url; CG.imgUrl = url; } else if (!url){ CG.img = null; CG.imgUrl = ""; }
+  catchReset(); CG.running = true; CG.last = performance.now();
+  document.getElementById("catchOverlay").hidden = true; requestAnimationFrame(catchLoop);
+}
+function catchEnd(){
+  CG.running = false;
+  const s = CG.score, best = me ? setRecord("catch", s) : false;
+  const verdict = s >= 60 ? "Torréfacteur de génie." : s >= 35 ? "Barista solide." : s >= 15 ? "Ça sent le déca." : "Gérard a vu. Gérard est triste.";
+  document.getElementById("catchMsg").textContent = `${s} points. ${verdict}${best ? " Nouveau record perso !" : ""}`;
+  document.querySelector("#catchOverlay strong").textContent = best ? "Record !" : "Fin de la pluie";
+  document.getElementById("catchStart").textContent = "Rejouer";
+  document.getElementById("catchOverlay").hidden = false;
+  if (best) beans(30);
+  renderGames(compute());
+}
+function catchLoop(now){
+  if (!CG.running) return;
+  const cv = document.getElementById("catchCanvas"), g = cv.getContext("2d");
+  const W = cv.clientWidth, H = cv.clientHeight, dpr = devicePixelRatio || 1;
+  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
+  g.setTransform(dpr,0,0,dpr,0,0);
+  const dt = Math.min(.05, (now - CG.last)/1000); CG.last = now;
+  CG.t -= dt; if (CG.t <= 0){ CG.t = 0; catchEnd(); }
+  if (CG.keys.ArrowLeft) CG.x -= dt*1.1; if (CG.keys.ArrowRight) CG.x += dt*1.1; CG.x = Math.max(.05, Math.min(.95, CG.x));
+  const elapsed = 30 - CG.t; CG.spawn -= dt;
+  if (CG.spawn <= 0){
+    const r = Math.random(); const kind = r < .08 ? "gold" : r < .3 ? "decaf" : "bean";
+    CG.items.push({ kind, x: 20 + Math.random()*(W-40), y: -20, v: 110 + elapsed*7 + Math.random()*60, r: Math.random()*6, vr: (Math.random()-.5)*6 });
+    CG.spawn = Math.max(.22, .62 - elapsed*.014);
+  }
+  const cupW = 74, cupH = 54, cx = CG.x*W, cy = H - cupH - 8;
+  g.clearRect(0,0,W,H);
+  CG.items = CG.items.filter(it=>{
+    it.y += it.v*dt; it.r += it.vr*dt;
+    if (it.y > cy - 6 && it.y < cy + 18 && Math.abs(it.x - cx) < cupW/2){
+      const pts = it.kind==="gold" ? 5 : it.kind==="decaf" ? -3 : 1; CG.score = Math.max(0, CG.score + pts);
+      if (it.kind==="decaf") CG.shake = .3;
+      document.getElementById("catchScore").textContent = "Score " + CG.score; return false;
+    }
+    if (it.y > H + 30) return false;
+    g.save(); g.translate(it.x, it.y); g.rotate(it.r);
+    if (it.kind === "decaf"){ g.fillStyle = "#5F7F34"; g.strokeStyle = "#2A1810"; g.lineWidth = 2; g.beginPath(); g.roundRect(-12,-9,24,18,6); g.fill(); g.stroke(); g.fillStyle = "#FBF4E8"; g.font = "bold 7px sans-serif"; g.textAlign = "center"; g.fillText("DÉCA", 0, 3); }
+    else { g.fillStyle = it.kind==="gold" ? "#E7B22A" : "#5A3420"; g.strokeStyle = "#2A1810"; g.lineWidth = 1.5; g.beginPath(); g.ellipse(0,0,8,11,0,0,Math.PI*2); g.fill(); g.stroke(); g.strokeStyle = it.kind==="gold" ? "#FFF3B0" : "#D9A066"; g.lineWidth = 2; g.beginPath(); g.moveTo(0,-8); g.quadraticCurveTo(-4,0,0,8); g.stroke(); }
+    g.restore(); return true;
+  });
+  // tasse
+  const sh = CG.shake > 0 ? (Math.random()-.5)*10 : 0; CG.shake -= dt;
+  g.save(); g.translate(cx + sh, cy);
+  g.lineWidth = 3; g.strokeStyle = "#2A1810";
+  g.beginPath(); g.arc(cupW/2 + 2, cupH*.45, 12, -Math.PI/2, Math.PI/2); g.stroke();
+  g.beginPath(); g.moveTo(-cupW/2, 0); g.lineTo(cupW/2, 0); g.lineTo(cupW/2 - 6, cupH); g.lineTo(-cupW/2 + 6, cupH); g.closePath();
+  g.fillStyle = me && state.players[me] ? state.players[me].color : "#C2372C"; g.fill();
+  if (CG.img && CG.img.complete){ g.save(); g.clip(); g.drawImage(CG.img, -cupW/2, 0, cupW, cupW); g.restore(); }
+  g.stroke();
+  g.fillStyle = "#5A3420"; g.beginPath(); g.ellipse(0, 0, cupW/2, 5, 0, 0, Math.PI*2); g.fill(); g.stroke();
+  g.restore();
+  document.getElementById("catchTime").textContent = Math.ceil(CG.t) + " s";
+  if (CG.running) requestAnimationFrame(catchLoop);
+}
+const arena = document.getElementById("arena");
+arena.addEventListener("pointermove", e=>{ const r = arena.getBoundingClientRect(); CG.x = (e.clientX - r.left)/r.width; });
+arena.addEventListener("pointerdown", e=>{ const r = arena.getBoundingClientRect(); CG.x = (e.clientX - r.left)/r.width; });
+addEventListener("keydown", e=>{ if (CG.running && (e.key==="ArrowLeft"||e.key==="ArrowRight")){ CG.keys[e.key] = true; e.preventDefault(); } });
+addEventListener("keyup", e=>{ CG.keys[e.key] = false; });
+document.getElementById("catchStart").addEventListener("click", catchStart);
+
+/* ---------- La crema parfaite ---------- */
+const CR = { round:0, scores:[], level:0, running:false, speed:0, target:[0,0], last:0, phase:0 };
+function cremaNewRound(){
+  const lo = 45 + Math.random()*35; CR.target = [lo, lo + 12 - CR.round*1.5];
+  CR.level = 0; CR.speed = 22 + CR.round*9; CR.phase = Math.random()*6;
+  const t = document.getElementById("cremaTarget"); t.style.bottom = CR.target[0] + "%"; t.style.height = (CR.target[1]-CR.target[0]) + "%";
+  document.getElementById("cremaFill").style.height = "0%";
+}
+function cremaRounds(){
+  document.getElementById("cremaRounds").innerHTML = [0,1,2,3,4].map(i=>`<span>${i < CR.scores.length ? CR.scores[i] : "·"}</span>`).join("");
+}
+function cremaStart(){
+  CR.round = 0; CR.scores = []; cremaRounds(); cremaNewRound(); CR.running = true; CR.last = performance.now();
+  document.getElementById("cremaBtn").textContent = "Stop !"; document.getElementById("cremaCaption").textContent = "Tasse 1 sur 5…";
+  requestAnimationFrame(cremaLoop);
+}
+function cremaLoop(now){
+  if (!CR.running) return;
+  const dt = Math.min(.05, (now - CR.last)/1000); CR.last = now; CR.phase += dt*4;
+  CR.level += CR.speed * (0.65 + 0.55*Math.abs(Math.sin(CR.phase))) * dt;
+  document.getElementById("cremaFill").style.height = Math.min(100, CR.level) + "%";
+  if (CR.level >= 100){ cremaStop(true); return; }
+  requestAnimationFrame(cremaLoop);
+}
+function cremaStop(overflow){
+  CR.running = false;
+  const mid = (CR.target[0]+CR.target[1])/2, half = (CR.target[1]-CR.target[0])/2;
+  let pts = 0, msg;
+  if (overflow){ msg = "Débordement ! Gérard nage dans le café."; }
+  else {
+    const d = Math.abs(CR.level - mid);
+    pts = d <= half ? Math.round(100 - (d/half)*30) : Math.max(0, Math.round(70 - (d-half)*6));
+    msg = pts >= 95 ? "Crema d'orfèvre." : pts >= 75 ? "Très honorable." : pts >= 40 ? "Buvable. De justesse." : CR.level < mid ? "C'est un ristretto ou une blague ?" : "Presque une piscine.";
+  }
+  CR.scores.push(pts); cremaRounds(); CR.round++;
+  if (CR.round >= 5){
+    const total = CR.scores.reduce((a,b)=>a+b,0), best = me ? setRecord("crema", total) : false;
+    document.getElementById("cremaCaption").textContent = `${msg} Total : ${total}/500.${best ? " Nouveau record perso !" : ""}`;
+    document.getElementById("cremaBtn").textContent = "Rejouer"; if (best) beans(30); renderGames(compute()); return;
+  }
+  document.getElementById("cremaCaption").textContent = `${msg} (+${pts}) Tasse ${CR.round+1} sur 5…`;
+  document.getElementById("cremaBtn").disabled = true;
+  setTimeout(()=>{ cremaNewRound(); CR.running = true; CR.last = performance.now(); document.getElementById("cremaBtn").disabled = false; requestAnimationFrame(cremaLoop); }, 900);
+}
+document.getElementById("cremaBtn").addEventListener("click", ()=>{ if (CR.running) cremaStop(false); else if (CR.round === 0 || CR.round >= 5) cremaStart(); });
+addEventListener("keydown", e=>{ if (e.code==="Space" && !document.getElementById("tab-crema").hidden && e.target === document.body){ e.preventDefault(); document.getElementById("cremaBtn").click(); } });
+
+/* ---------- Onglets + rendu des jeux ---------- */
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click", ()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected", x===t));
+  ["wall","catch","crema"].forEach(n=>{ document.getElementById("tab-"+n).hidden = n !== t.dataset.tab; });
+  if (t.dataset.tab !== "catch" && CG.running){ CG.running = false; document.getElementById("catchOverlay").hidden = false; }
+}));
+function renderGames(c){
+  renderWall(c);
+  document.getElementById("catchRec").innerHTML = recordLine("catch","pts");
+  document.getElementById("cremaRec").innerHTML = recordLine("crema","/500");
+}
+cremaRounds();
+
+/* ---------- Actions ---------- */
+const DELTA_KEYS = ["cups","grams","cleans","descales","xp"];
+function deltaFor(p, type, qty){
+  return { cups: type==="cup"?1:0, grams: type==="buy"?qty:0, cleans: type==="clean"?1:0, descales: type==="descale"?1:0, xp: xpFor(p, type, qty) };
+}
+function applyLocal(p, d, sign){ for (const k of DELTA_KEYS) p[k] = (p[k]||0) + sign*(d[k]||0); }
+function incFields(d, sign){ const o = {}; for (const k of DELTA_KEYS) if (d[k]) o[k] = FV.increment(sign*d[k]); return o; }
+
+async function logEvent(type, qty){
+  if (!me || !state.players[me]) return;
+  const before = compute().list.find(p=>p.id===me);
+  const p = state.players[me], at = Date.now(), d = deltaFor(p, type, qty||0);
+  const totalC = compute().totalC + d.cups;
+  const metaUp = type==="clean" ? { lastClean: at, cupsAtClean: totalC } : type==="descale" ? { lastClean: at, cupsAtClean: totalC, lastDescale: at, cupsAtDescale: totalC } : null;
+  try {
+    if (demo){
+      state.events.push({ id: newId(), player: me, type, qty: qty||0, at, d }); applyLocal(p, d, 1);
+      if (metaUp){ Object.assign(state.meta, metaUp); p.lastClean = at; }
+      render();
+    } else {
+      const batch = fs.batch();
+      batch.set(col("evenements").doc(), { player: me, type, qty: qty||0, at, d });
+      batch.update(col("buveurs").doc(me), Object.assign(incFields(d, 1), metaUp ? { lastClean: at } : {}));
+      if (metaUp) batch.set(teamRef, metaUp, { merge: true });
+      const done = batch.commit();
+      await Promise.race([done, new Promise(r=>setTimeout(r, 400))]); // hors ligne : l'action partira plus tard
+    }
+  } catch(e){ toast("Gérard n'a pas pu noter ça. Réessaie dans un instant."); return; }
+  const after = compute().list.find(p=>p.id===me) || before;
+  const name = esc(state.players[me].name);
+  const gain = d.xp;
+  let msg = esc(pick(ACT_TXT[type])(state.players[me].name, qty));
+  if (type==="cup" && gain < 0) msg = `Taxe de vampirisme appliquée, ${name}. Achète du café.`;
+  toast(msg + ` <span class="xp">${gain>0?"+":""}${gain} XP</span>`);
+  if (after && before && after.level>before.level){ beans(40); setTimeout(()=>toast(`Niveau ${after.level} ! ${name} devient « ${after.title} »`), 1400); }
+  else if (type!=="cup") beans(type==="descale"?30:12);
+  const mb = document.getElementById("machineBox"); mb.classList.remove("wobble"); void mb.offsetWidth; mb.classList.add("wobble");
+}
+
+document.addEventListener("click", async e=>{
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.shame) return throwBean(t, e);
+  if (t.dataset.photo){ photoTarget = t.dataset.photo; document.getElementById("photoInput").click(); return; }
+  if (t.dataset.unphoto) return removePhoto(t.dataset.unphoto);
+  if (t.dataset.act) return logEvent(t.dataset.act, Number(t.dataset.qty||0));
+  if (t.dataset.me){ if (me !== t.dataset.me) await flushGames(); me = t.dataset.me; try{localStorage.setItem("cc-me",me);}catch(_){} render(); toast(`Salut ${esc(state.players[me].name)}. Gérard te surveille.`); return; }
+  if (t.hasAttribute("data-focus-add")){ document.getElementById("newName").focus(); document.getElementById("addForm").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+  if (t.dataset.undo){
+    const id = t.dataset.undo; const ev = state.events.find(x=>x.id===id); if (!ev) return; t.disabled = true;
+    const d = ev.d || deltaFor(state.players[ev.player]||{}, ev.type, ev.qty);
+    try {
+      if (demo){ state.events = state.events.filter(x=>x.id!==id); if (state.players[ev.player]) applyLocal(state.players[ev.player], d, -1); render(); }
+      else {
+        const batch = fs.batch();
+        batch.delete(col("evenements").doc(id));
+        if (state.players[ev.player]) batch.update(col("buveurs").doc(ev.player), incFields(d, -1));
+        await batch.commit();
+      }
+      toast("Effacé. Gérard fera semblant d'avoir oublié.");
+    } catch(_){ t.disabled = false; toast("Impossible d'annuler pour l'instant."); }
+    return;
+  }
+  if (t.dataset.del){
+    if (t.dataset.armed!=="1"){ t.dataset.armed="1"; t.textContent="sûr ? cliquer encore"; setTimeout(()=>{ if(t.isConnected){t.dataset.armed="";t.textContent="retirer";} },3000); return; }
+    const id = t.dataset.del;
+    try {
+      if (demo){ delete state.players[id]; delete state.avatars[id]; render(); }
+      else { const batch = fs.batch(); batch.delete(col("buveurs").doc(id)); batch.delete(col("jeux").doc(id)); await batch.commit(); }
+      toast("Buveur retiré du comptoir. Gérard garde un souvenir ému de ses dettes.");
+    } catch(_){ toast("Impossible de retirer ce buveur pour l'instant."); }
+  }
+});
+
+document.getElementById("addForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const name = cleanName(document.getElementById("newName").value);
+  if (!name){ toast("Un prénom avec des lettres, s'il te plaît. Gérard n'accepte pas les hiéroglyphes."); return; }
+  if (Object.values(state.players).some(p=>keyOf(p.name)===keyOf(name))){ toast(`${esc(name)} existe déjà au comptoir. Choisis un autre nom (ex. « ${esc(name)} B. »).`); return; }
+  const data = { name, color: colorOf(name), createdAt: Date.now(), cups:0, grams:0, cleans:0, descales:0, xp:0, lastClean:0 };
+  try {
+    let id;
+    if (demo){ id = newId(); state.players[id] = data; }
+    else { const ref = col("buveurs").doc(); id = ref.id; ref.set(data); }
+    me = id; try{localStorage.setItem("cc-me",me);}catch(_){}
+    document.getElementById("newName").value = ""; render();
+    toast(`Bienvenue ${esc(name)} ! Gérard t'a à l'œil.`); beans(16);
+  } catch(_){ toast("Impossible d'ajouter ce buveur pour l'instant."); }
+});
+
+function loadDemo(){
+  demo = true;
+  const now = Date.now(), h = 36e5;
+  const players = {
+    a:{name:"Sophie (exemple)",color:"#5F7F34"}, b:{name:"Karim (exemple)",color:"#C2372C"},
+    c:{name:"Léa (exemple)",color:"#D9A066"}, d:{name:"Bruno (exemple)",color:"#3E6C8C"}
+  };
+  const ev = [];
+  const add = (p,type,qty,ago)=>ev.push({id:"e"+ev.length,player:p,type,qty,at:now-ago});
+  add("a","buy",1000,9*24*h); add("c","buy",500,6*24*h); add("a","descale",0,8*24*h);
+  for (let i=0;i<34;i++) add("b","cup",0,(i*5+1)*h);
+  for (let i=0;i<22;i++) add("a","cup",0,(i*7+2)*h);
+  for (let i=0;i<18;i++) add("c","cup",0,(i*8+3)*h);
+  for (let i=0;i<9;i++) add("d","cup",0,(i*15+4)*h);
+  add("c","clean",0,2*24*h); add("a","clean",0,26*h); add("d","buy",250,3*h);
+  ev.sort((x,y)=>x.at-y.at);
+  const meta = {}; let total = 0;
+  for (const e of ev){
+    const p = players[e.player]; e.d = deltaFor(p, e.type, e.qty); applyLocal(p, e.d, 1); total += e.d.cups;
+    if (e.type==="clean"||e.type==="descale"){ p.lastClean = e.at; meta.lastClean = e.at; meta.cupsAtClean = total; }
+    if (e.type==="descale"){ meta.lastDescale = e.at; meta.cupsAtDescale = total; }
+  }
+  state.players = players; state.events = ev; state.meta = meta; me = "a";
+  state.avatars = {}; state.games = { a:{ grains:{ b:7 }, records:{ catch:41, crema:388 } }, c:{ grains:{ b:4, d:2 }, records:{ catch:27 } } };
+  render();
+}
+
+/* ---------- Démarrage ---------- */
+loadDemo();
+startFirebase();
+setInterval(()=>{ document.getElementById("bubble").dataset.tier=""; render(); }, 60e3);
+</script>
+</body>
+</html>
