@@ -59,7 +59,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--crema);outline-
 .appbar .who-me svg{width:28px;height:28px;flex:none}
 .appbar .who-me span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.app{max-width:520px;margin:0 auto;padding-inline:16px;padding-block:14px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 28px)}
+.app{overflow-x:clip;max-width:520px;margin:0 auto;padding-inline:16px;padding-block:14px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 28px)}
 .screen{display:flex;flex-direction:column;gap:16px}
 .screen.enter{animation:screenIn .42s var(--spring)}
 @keyframes screenIn{from{opacity:.25;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
@@ -265,6 +265,101 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--crema);outline-
 .rounds span{font-family:var(--f-mono);font-size:.82rem;border:1.5px solid var(--line);border-radius:8px;padding:3px 10px;min-width:44px;text-align:center}
 .empty{text-align:center;padding:22px 12px;color:var(--ink-soft);display:flex;flex-direction:column;gap:8px;align-items:center}
 .empty svg{width:84px}
+/* ---- Jeux v2 ---- */
+.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tab{position:relative}
+.new-tag{position:absolute;top:-6px;right:4px;background:var(--cherry);color:#fff;font-family:var(--f-mono);font-size:.56rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;border-radius:99px;padding:1px 6px;animation:breathe 1.6s ease-in-out infinite}
+.panel p b{color:var(--ink)}
+.combo-pill{font-family:var(--f-display);font-weight:400;font-size:1rem;color:#2A1810;background:#E7B22A;border-radius:99px;padding:0 10px;line-height:1.6;box-shadow:0 2px 0 #2A1810}
+.combo-pill.pop{animation:pop .35s var(--spring)}
+.legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 8px;font-size:.7rem;color:var(--ink-soft);line-height:1.25}
+.legend span{display:flex;align-items:center;gap:5px;min-width:0}
+.legend .wide{grid-column:1/-1;font-style:italic}
+.lg{flex:none;width:12px;height:12px;border-radius:50%;border:1.5px solid #2A1810;display:inline-block}
+.lg-bean{background:#5A3420;border-radius:50% / 60%}.lg-gold{background:#E7B22A;border-radius:50% / 60%}
+.lg-decaf{background:#5F7F34;border-radius:4px}.lg-sugar{background:#fff;border-radius:2px}
+.lg-chili{background:#D7301F;border-radius:50% 50% 50% 0}.lg-clock{background:#9FD0EA}
+
+/* lance-pierre du mur */
+.sling{position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 12px);z-index:5;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);border-radius:18px;padding:10px 12px;box-shadow:0 8px 22px var(--shadow)}
+.sling[hidden]{display:none!important}
+.sling-pad{position:relative;width:70px;height:70px;flex:none;border-radius:50%;background:radial-gradient(circle,#4A3024,#1C120D);border:2px dashed #D9A066;display:grid;place-items:center}
+.sling-bean{width:32px;height:44px;touch-action:none;cursor:grab;position:relative;z-index:6;transition:transform .35s var(--spring);filter:drop-shadow(0 3px 0 rgba(0,0,0,.35))}
+.sling-bean svg{width:100%;height:100%;display:block}
+.sling-bean.dragging{transition:none;cursor:grabbing}
+.sling-bean.respawn{animation:respawn .45s var(--spring)}
+@keyframes respawn{from{transform:scale(0) rotate(-90deg)}}
+.sling-bean.gold{filter:drop-shadow(0 0 10px #FFD54A) drop-shadow(0 3px 0 rgba(0,0,0,.35));animation:respawn .45s var(--spring),glint 1s ease-in-out .45s infinite}
+@keyframes glint{50%{transform:rotate(-10deg) scale(1.08)}}
+.sling-txt{font-size:.78rem;line-height:1.3;min-width:0;flex:1;color:#E9D3B4;display:flex;flex-direction:column;gap:3px}
+.sling-cap{font-weight:800;color:#FBF4E8;font-size:.86rem}
+.sling-cap:empty{display:none}
+.sling-cap.pop{animation:pop .35s var(--spring)}
+.sling-txt b{color:#FFE2A8}
+.sling-combo{position:absolute;right:10px;top:-14px}
+.flying.gold svg ellipse{fill:#E7B22A}
+.crit{position:fixed;z-index:72;pointer-events:none;font-family:var(--f-display);font-size:1.6rem;color:#FFE2A8;-webkit-text-stroke:1px #2A1810;text-shadow:0 3px 0 #2A1810;animation:xpUp 1s cubic-bezier(.2,.9,.3,1) forwards;white-space:nowrap}
+
+/* crema v2 */
+.crema-stage{display:flex;flex-direction:column;align-items:center}
+.spout{width:70px;height:22px;background:#2A1810;border-radius:8px 8px 4px 4px;position:relative;margin-bottom:2px}
+.spout i{position:absolute;left:50%;top:100%;width:8px;margin-left:-4px;height:0;background:linear-gradient(#5A3420,#6B3E26);border-radius:0 0 4px 4px;transition:height .12s}
+.spout i.on{height:calc(clamp(150px,30vh,230px) + 6px);animation:stream .25s linear infinite}
+@keyframes stream{50%{width:6px;margin-left:-3px}}
+.glass .target{transition:bottom .1s linear,height .3s}
+.glass .target span{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);font-size:.6rem;color:#5F7F34}
+.glass .fill{overflow:visible}
+.glass .foam{position:absolute;left:0;right:0;bottom:100%;height:0;background:radial-gradient(circle at 20% 60%,#fff 0 5px,transparent 6px),radial-gradient(circle at 60% 40%,#fff 0 6px,transparent 7px),radial-gradient(circle at 85% 70%,#fff 0 4px,transparent 5px),#FFF5E4;background-size:26px 14px;border-radius:10px 10px 0 0;transition:height .15s var(--spring)}
+.glass.splash{animation:hit .35s var(--spring)}
+.glass.perfect{box-shadow:0 0 0 4px #E7B22A,0 0 24px #E7B22A}
+.crema-title{font-family:var(--f-display);font-size:1.1rem;color:var(--mocha);text-align:center}
+.hold{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.hold.pouring{background:var(--cherry);transform:scale(.97)}
+.hold.foaming{background:#E7B22A;color:#2A1810;animation:breathe .4s ease-in-out infinite}
+
+/* rush du barista */
+.rush{position:relative;display:flex;flex-direction:column;gap:10px;min-height:400px;scroll-margin-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 24px)}
+.rush .overlay{border-radius:16px}
+.order{background:#FFF9EE;border:2px solid #2A1810;border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;color:#2A1810;box-shadow:3px 3px 0 #2A1810;min-height:96px}
+.order.enter{animation:orderIn .45s var(--spring)}
+@keyframes orderIn{from{transform:translateX(110%) rotate(6deg)}}
+.order.vip{background:linear-gradient(135deg,#FFF3C4,#FFE08A);border-color:#B8860B}
+.order-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.order-top .cust{font-size:.74rem;color:#6E5444;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.order-top .oname{font-family:var(--f-display);font-size:1.25rem;white-space:nowrap}
+.recipe{display:flex;flex-wrap:wrap;gap:5px}
+.recipe .ing{font-size:.72rem;font-weight:800;border:1.5px dashed #6E5444;border-radius:99px;padding:2px 8px;color:#6E5444}
+.recipe .ing.done{border-style:solid;background:#5F7F34;border-color:#5F7F34;color:#fff}
+.recipe .ing.shake{border-color:#C2372C;color:#C2372C}
+.patience{height:6px;border-radius:99px;background:#E2CDB0;overflow:hidden}
+.patience i{display:block;height:100%;width:100%;background:#5F7F34;transform-origin:left;border-radius:99px}
+.rush-mid{display:flex;gap:12px;align-items:center}
+.rush-cup{position:relative;flex:none;width:118px;height:118px;border:none;background:none;padding:0;touch-action:manipulation}
+.rush-cup .cup-body{position:absolute;left:8px;top:10px;width:86px;height:96px;border:4px solid #2A1810;border-top-width:3px;border-radius:6px 6px 26px 26px;background:#FFFDF8;overflow:hidden;display:flex;flex-direction:column-reverse}
+.rush-cup .cup-handle{position:absolute;left:92px;top:34px;width:24px;height:38px;border:4px solid #2A1810;border-left:none;border-radius:0 18px 18px 0}
+.rush-cup.over .cup-body{box-shadow:0 0 0 4px #E7B22A}
+.rush-cup.bad{animation:hit .4s var(--spring)}
+.rush-cup.served{animation:served .45s ease-in forwards}
+@keyframes served{to{transform:translateX(160%) rotate(14deg);opacity:0}}
+.rush-cup.shaking{animation:wob .25s linear infinite}
+.layer{flex:none;width:100%;height:0;transition:height .3s var(--spring)}
+.layer.in{height:22px}
+.L-espresso{background:#3A2216}.L-eau{background:#9FD0EA}.L-lait{background:#F3EBDD}
+.L-mousse{background:radial-gradient(circle at 30% 50%,#fff 0 4px,transparent 5px),radial-gradient(circle at 70% 40%,#fff 0 3px,transparent 4px),#FFF5E4;background-size:18px 12px}
+.L-sucre{background:repeating-linear-gradient(90deg,#fff 0 6px,#EDE6DA 6px 8px)}
+.L-chocolat{background:#6B3A1E}.L-glacon{background:repeating-linear-gradient(45deg,#DDF2FC 0 8px,#B9E2F5 8px 12px)}
+.rush-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.rush-msg{font-weight:800;font-size:.9rem;line-height:1.3;color:var(--mocha);min-height:2.6em}
+.rush-msg.pop{animation:pop .35s var(--spring)}
+.shake-meter{display:flex;flex-direction:column;gap:4px;font-family:var(--f-display);color:var(--cherry);animation:breathe .5s ease-in-out infinite}
+.shake-meter i{display:block;height:10px;border-radius:99px;background:linear-gradient(90deg,#C2372C var(--p,0%),#E2CDB0 var(--p,0%));border:2px solid #2A1810}
+.tray{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.token{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:62px;border-radius:14px;border:2px solid #2A1810;background:#FFF9EE;color:#2A1810;font-size:.68rem;font-weight:800;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 3px 0 #2A1810;transition:transform .25s var(--spring)}
+.token:active{transform:scale(.92)}
+.token svg{width:28px;height:28px}
+.token.ghost{position:fixed;z-index:75;pointer-events:none;margin:0;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.rush-float{position:fixed;z-index:72;pointer-events:none;font-family:var(--f-display);font-size:1.4rem;color:#FFE2A8;-webkit-text-stroke:1px #2A1810;text-shadow:0 3px 0 #2A1810;animation:xpUp 1.1s cubic-bezier(.2,.9,.3,1) forwards;white-space:nowrap}
+.rush-float.bad{color:#FF8A7A}
 
 /* ---- Choix du buveur ---- */
 .me-pick{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:8px 14px 8px 8px;border-radius:18px;border:2px solid var(--paper);background:var(--paper);color:var(--ink);text-align:left;transition:transform .3s var(--spring)}
@@ -427,34 +522,66 @@ html.lock{overflow:hidden}
         <button class="tab" role="tab" aria-selected="true" data-tab="wall">Mur de la honte</button>
         <button class="tab" role="tab" aria-selected="false" data-tab="catch">Attrape-grains</button>
         <button class="tab" role="tab" aria-selected="false" data-tab="crema">Crema parfaite</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="rush">Rush du barista <span class="new-tag">nouveau</span></button>
       </div>
 
       <div class="panel" id="tab-wall" role="tabpanel">
         <div class="game-head"><h3>Le mur de la honte</h3><span class="records" id="wallRec"></span></div>
-        <p>Tous les buveurs en solde de tasses négatif, du plus endetté au moins endetté. Tape sur une affiche pour lui jeter un grain.</p>
+        <p>Les buveurs en solde négatif, du plus endetté au moins endetté. <b>Glisse le grain vers le haut</b> pour le lancer sur une affiche, ou tape directement dessus. Enchaîne les tirs pour une rafale. Grain doré : coup critique, 3 grains d'un coup.</p>
         <div class="wall" id="wall"></div>
-        <div class="caption" id="wallCaption" aria-live="polite"></div>
+        <div class="sling" id="sling">
+          <div class="sling-pad"><div class="sling-bean" id="slingBean" aria-label="Grain à lancer" role="img"></div></div>
+          <div class="sling-txt"><span class="sling-cap" id="wallCaption" aria-live="polite"></span><span id="slingTip"></span></div>
+          <span class="combo-pill sling-combo" id="wallCombo" hidden></span>
+        </div>
       </div>
 
       <div class="panel" id="tab-catch" role="tabpanel" hidden>
         <div class="game-head"><h3>Attrape-grains</h3><span class="records" id="catchRec"></span></div>
-        <p>10 secondes. Glisse le doigt pour attraper les grains. Doré : +5. Capsule de déca : −3.</p>
-        <div class="hud"><span id="catchScore">Score 0</span><span id="catchTime">10 s</span></div>
+        <p><b>Incline ton téléphone</b> pour déplacer la tasse, ou glisse le doigt. 20 secondes, jusqu'à 30 avec les chronos.</p>
+        <div class="legend">
+          <span><i class="lg lg-bean"></i>Grain +1</span><span><i class="lg lg-gold"></i>Doré +5</span><span><i class="lg lg-decaf"></i>Déca −3, tasse mini</span>
+          <span><i class="lg lg-sugar"></i>Sucre : tasse XXL</span><span><i class="lg lg-chili"></i>Piment : commandes inversées</span><span><i class="lg lg-clock"></i>Chrono +3 s</span>
+          <span class="wide">Combo ×2 dès 6 grains d'affilée, ×3 dès 15. Les 5 dernières secondes comptent double.</span>
+        </div>
+        <div class="hud"><span id="catchScore">Score 0</span><span class="combo-pill" id="catchCombo" hidden></span><span id="catchTime">20 s</span></div>
         <div class="arena" id="arena"><canvas id="catchCanvas" width="800" height="420" aria-label="Zone de jeu Attrape-grains"></canvas>
-          <div class="overlay" id="catchOverlay"><strong>Attrape-grains</strong><span id="catchMsg">Gérard lâche ses réserves. Sauve ce qui peut l'être.</span><button class="btn" id="catchStart" style="background:#D9A066;color:#2A1810">Jouer</button></div>
+          <div class="overlay" id="catchOverlay"><strong>Attrape-grains</strong><span id="catchMsg">Gérard lâche ses réserves. Incline le téléphone pour sauver ce qui peut l'être.</span><button class="btn" id="catchStart" style="background:#D9A066;color:#2A1810">Jouer</button></div>
         </div>
       </div>
 
       <div class="panel" id="tab-crema" role="tabpanel" hidden>
         <div class="game-head"><h3>La crema parfaite</h3><span class="records" id="cremaRec"></span></div>
-        <p>Le café monte. Tape « Stop » quand il est dans la zone verte. 3 tasses, 100 points max chacune. Ça déborde : zéro.</p>
+        <p><b>Maintiens le bouton</b> pour verser, relâche dans la zone verte. 5 tasses de plus en plus vicieuses : la zone bouge, Gérard a le hoquet. Pile au centre : <b>parfait</b>, +20 et série. Puis <b>tape vite</b> pour faire mousser le lait.</p>
         <div class="crema-zone">
-          <div class="glass" aria-hidden="true"><div class="target" id="cremaTarget"></div><div class="fill" id="cremaFill"></div></div>
+          <div class="crema-stage">
+            <div class="spout" aria-hidden="true"><i id="cremaStream"></i></div>
+            <div class="glass" id="cremaGlass" aria-hidden="true"><div class="target" id="cremaTarget"><span>zone</span></div><div class="fill" id="cremaFill"><div class="foam" id="cremaFoam"></div></div></div>
+          </div>
           <div class="crema-side">
+            <div class="crema-title" id="cremaTitle">5 tasses, une réputation.</div>
             <div class="rounds" id="cremaRounds"></div>
             <div class="caption" id="cremaCaption" aria-live="polite">Prêt à servir ?</div>
-            <button class="btn big" id="cremaBtn">Servir</button>
+            <button class="btn big hold" id="cremaBtn">Commencer</button>
           </div>
+        </div>
+      </div>
+
+      <div class="panel" id="tab-rush" role="tabpanel" hidden>
+        <div class="game-head"><h3>Le rush du barista</h3><span class="records" id="rushRec"></span></div>
+        <p>30 secondes de coup de feu. <b>Glisse les ingrédients dans la tasse</b> (ou tape dessus). Quand la commande dit « secouer », <b>secoue le téléphone</b> ou tape la tasse à toute vitesse. Mauvais ingrédient : poubelle. Client trop long à servir : il part.</p>
+        <div class="hud"><span id="rushScore">Score 0</span><span class="combo-pill" id="rushCombo" hidden></span><span id="rushTime">30 s</span></div>
+        <div class="rush" id="rush">
+          <div class="order" id="rushOrder"></div>
+          <div class="rush-mid">
+            <button class="rush-cup" id="rushCup" aria-label="La tasse"><span class="cup-body" id="rushLayers"></span><span class="cup-handle"></span></button>
+            <div class="rush-side">
+              <div class="rush-msg" id="rushMsg" aria-live="polite">Les clients arrivent…</div>
+              <div class="shake-meter" id="rushShake" hidden><span>Secoue !</span><i id="rushShakeBar"></i></div>
+            </div>
+          </div>
+          <div class="tray" id="rushTray"></div>
+          <div class="overlay" id="rushOverlay"><strong>Coup de feu !</strong><span id="rushOverMsg">Les collègues sortent de réunion. Ils veulent tous un café, maintenant.</span><button class="btn" id="rushStart" style="background:#D9A066;color:#2A1810">Ouvrir le comptoir</button></div>
         </div>
       </div>
     </section>
@@ -598,7 +725,7 @@ function machineSVG(h){
 const moodOf = p => p.balance<-5 ? "sad" : p.balance>=20 ? "star" : "happy";
 const faceOf = (p, mood) => mugSVG(p.color, mood || "happy", state.avatars[p.id]);
 const CAM = `<svg viewBox="0 0 16 16"><path d="M2 5h3l1.5-2h3L11 5h3v8H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="9" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>`;
-const GAME_SECONDS = 10, CREMA_ROUNDS = 3;
+const CATCH_SECONDS = 20, CATCH_MAX = 30, CREMA_ROUNDS = 5, RUSH_SECONDS = 30;
 const XP = { cup: 2, tax: -5, taxDebt: 15, per100g: 15, water: 15, clean: 25, descale: 80 };
 function xpFor(p, type, qty){
   if (type === "cup"){ const debt = (p.cups||0) - (p.grams||0)/G_PER_CUP; return debt > XP.taxDebt ? XP.tax : XP.cup; }
@@ -938,9 +1065,10 @@ async function removePhoto(k){
 /* ---------- Jeux : grains jetés (compteurs) + records ---------- */
 let pendingGames = { grains:{}, records:{} }, flushTimer = null;
 function myGames(){ return state.games[me] || (state.games[me] = { grains:{}, records:{} }); }
-function addGrain(target){
-  myGames().grains[target] = (myGames().grains[target]||0) + 1;
-  pendingGames.grains[target] = (pendingGames.grains[target]||0) + 1; scheduleFlush();
+function addGrain(target, n){
+  n = n || 1;
+  myGames().grains[target] = (myGames().grains[target]||0) + n;
+  pendingGames.grains[target] = (pendingGames.grains[target]||0) + n; scheduleFlush();
 }
 function setRecord(game, score){
   const g = myGames(); const old = g.records[game] || 0;
@@ -994,6 +1122,7 @@ let wallSig = "";
 function renderWall(c){
   const wall = document.getElementById("wall");
   const t = wallTargets(c);
+  document.getElementById("sling").hidden = !t.length;
   const sig = t.map(x=>x.p.id+"|"+x.crimes.join(",")+"|"+(state.avatars[x.p.id]||"")).join(";");
   if (sig !== wallSig){
     wallSig = sig;
@@ -1007,40 +1136,163 @@ function renderWall(c){
   let top = null; for (const k of Object.keys(state.players)){ const n = grainsReceived(k); if (n && (!top || n > top.n)) top = { n, k }; }
   document.getElementById("wallRec").innerHTML = top ? `Cible préférée : <b>${esc(state.players[top.k].name)}</b> (${top.n} grains)` : "Aucun grain jeté pour l'instant";
 }
+/* ---------- Capteurs du téléphone (inclinaison, secousses) ---------- */
+const MOTION = { asked:false, granted:false, gamma:null, lastOri:0, prev:null, lastShake:0, shakeCbs:new Set() };
+function requestMotion(){ // à appeler pendant un toucher (iPhone exige un geste)
+  if (MOTION.asked) return Promise.resolve(MOTION.granted);
+  MOTION.asked = true;
+  const asks = [];
+  try {
+    if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") asks.push(DeviceOrientationEvent.requestPermission());
+    if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") asks.push(DeviceMotionEvent.requestPermission());
+  } catch(e) {}
+  if (!asks.length){ MOTION.granted = true; return Promise.resolve(true); }
+  return Promise.allSettled(asks).then(r=>{ MOTION.granted = r.some(x=>x.status==="fulfilled" && x.value==="granted"); return MOTION.granted; });
+}
+addEventListener("deviceorientation", e=>{ if (e.gamma != null){ MOTION.gamma = e.gamma; MOTION.lastOri = performance.now(); } });
+addEventListener("devicemotion", e=>{
+  const a = e.accelerationIncludingGravity || e.acceleration; if (!a || a.x == null) return;
+  if (MOTION.prev){
+    const d = Math.abs(a.x-MOTION.prev.x) + Math.abs(a.y-MOTION.prev.y) + Math.abs((a.z||0)-(MOTION.prev.z||0)), now = performance.now();
+    if (d > 20 && now - MOTION.lastShake > 130){ MOTION.lastShake = now; MOTION.shakeCbs.forEach(f=>f()); }
+  }
+  MOTION.prev = { x:a.x, y:a.y, z:a.z };
+});
+const tiltActive = () => MOTION.gamma != null && performance.now() - MOTION.lastOri < 600;
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+function floatText(x, y, text, cls){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const el = document.createElement("div"); el.className = cls || "rush-float"; el.textContent = text;
+  el.style.left = x + "px"; el.style.top = y + "px"; document.body.appendChild(el); setTimeout(()=>el.remove(), 1150);
+}
+function popEl(el){ el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+
+/* ---------- Mur de la honte : lance-pierre ---------- */
+const BEAN_GOLD = `<svg viewBox="0 0 16 22"><ellipse cx="8" cy="11" rx="7" ry="10" fill="#E7B22A" stroke="#2A1810" stroke-width="1.2"/><path d="M8 3q-3 8 0 16" stroke="#FFF3B0" stroke-width="1.6" fill="none"/></svg>`;
+const MISSES = ["Raté ! Le grain finit dans le pot de fleurs.", "Dans le mur. Littéralement.", "Gérard a dévié le tir. Solidarité entre machines ?", "Le grain est parti en vacances.", "Tir de semi-déca. Concentre-toi."];
+const WALL = { combo:0, lastHit:0, gold:false, busy:false };
+function slingReset(){
+  const b = document.getElementById("slingBean");
+  WALL.gold = Math.random() < .13; WALL.busy = false;
+  b.innerHTML = WALL.gold ? BEAN_GOLD : BEAN;
+  b.classList.toggle("gold", WALL.gold);
+  b.classList.remove("dragging","respawn"); b.style.transform = ""; b.style.visibility = ""; void b.offsetWidth; b.classList.add("respawn");
+  document.getElementById("slingTip").innerHTML = WALL.gold ? "<b>Grain doré !</b> Coup critique : 3 grains d'un coup."
+    : "<b>Glisse le grain vers le haut</b> pour viser.";
+}
+function flyBean(sx, sy, ex, ey, cb){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches){ cb(); return; }
+  const b = document.createElement("div"); b.className = "flying" + (WALL.gold ? " gold" : ""); b.innerHTML = WALL.gold ? BEAN_GOLD : BEAN; document.body.appendChild(b);
+  const dist = Math.hypot(ex-sx, ey-sy), dur = clamp(dist*0.55, 220, 460);
+  const mx = (sx+ex)/2, my = (sy+ey)/2 - Math.min(90, dist*.18);
+  const a = b.animate([
+    { transform: `translate(${sx-9}px,${sy-12}px) rotate(0deg) scale(1.5)` },
+    { transform: `translate(${mx-9}px,${my-12}px) rotate(420deg) scale(1.1)`, offset: .5 },
+    { transform: `translate(${ex-9}px,${ey-12}px) rotate(840deg) scale(.75)` }
+  ], { duration: dur, easing: "cubic-bezier(.3,.6,.5,1)" });
+  a.onfinish = () => { b.remove(); cb(); };
+}
+function landHit(poster, x, y){
+  const k = poster.dataset.shame, rect = poster.getBoundingClientRect(), gold = WALL.gold;
+  poster.classList.remove("hit"); void poster.offsetWidth; poster.classList.add("hit");
+  const s = { x: Math.round(x - rect.left - 15), y: Math.round(y - rect.top - 15), r: Math.round(Math.random()*360) };
+  (splats[k] = splats[k] || []).push(s); if (splats[k].length > 14) splats[k].shift();
+  const el = document.createElement("span"); el.className = "splat"; el.style.cssText = `left:${s.x}px;top:${s.y}px;transform:rotate(${s.r}deg)${gold?";filter:sepia(1) saturate(4) hue-rotate(5deg)":""}`; el.innerHTML = SPLAT; poster.appendChild(el);
+  const now = performance.now();
+  WALL.combo = now - WALL.lastHit < 1700 ? WALL.combo + 1 : 1; WALL.lastHit = now;
+  addGrain(k, gold ? 3 : 1);
+  const best = WALL.combo >= 2 && me ? setRecord("wall", WALL.combo) : false;
+  const pill = document.getElementById("wallCombo");
+  pill.hidden = WALL.combo < 2; pill.textContent = `Rafale ×${WALL.combo}`; popEl(pill);
+  clearTimeout(WALL.comboT); WALL.comboT = setTimeout(()=>{ pill.hidden = true; }, 1700);
+  const name = state.players[k] ? state.players[k].name : "?";
+  const cap = document.getElementById("wallCaption");
+  cap.textContent = gold ? `COUP CRITIQUE sur ${name} ! Trois grains d'un coup.`
+    : WALL.combo >= 6 ? `Rafale ×${WALL.combo} ! La mitraillette à café est de sortie.`
+    : k === me ? "Tu te jettes des grains à toi-même. Gérard respecte l'autocritique."
+    : pick(SHAME)(name);
+  popEl(cap);
+  if (gold) floatText(x, y - 10, "CRITIQUE ×3", "crit"); else if (WALL.combo >= 3) floatText(x, y - 10, "×" + WALL.combo, "crit");
+  if (best && WALL.combo >= 3) toast(`Nouvelle meilleure rafale : ×${WALL.combo} !`);
+  buzz(gold ? [20,40,70] : 14);
+  renderGames(compute());
+  setTimeout(slingReset, 160);
+}
+function landMiss(){
+  WALL.combo = 0; document.getElementById("wallCombo").hidden = true;
+  const cap = document.getElementById("wallCaption"); cap.textContent = pick(MISSES); popEl(cap);
+  buzz([8,30,8]); setTimeout(slingReset, 160);
+}
+const slingBean = document.getElementById("slingBean");
+let sdrag = null;
+function needMe(){ if (!me){ openWho("Choisis qui tu es pour avoir des munitions."); return true; } return false; }
+slingBean.addEventListener("pointerdown", e=>{
+  if (WALL.busy || needMe()) return;
+  e.preventDefault(); try { slingBean.setPointerCapture(e.pointerId); } catch(_){}
+  sdrag = { id:e.pointerId, ox:e.clientX, oy:e.clientY, pts:[{ x:e.clientX, y:e.clientY, t:performance.now() }] };
+  slingBean.classList.add("dragging"); slingBean.classList.remove("respawn");
+});
+slingBean.addEventListener("pointermove", e=>{
+  if (!sdrag || e.pointerId !== sdrag.id) return;
+  const dx = e.clientX - sdrag.ox, dy = e.clientY - sdrag.oy;
+  slingBean.style.transform = `translate(${dx}px,${dy}px) rotate(${dx*.5}deg) scale(1.15)`;
+  sdrag.pts.push({ x:e.clientX, y:e.clientY, t:performance.now() }); if (sdrag.pts.length > 10) sdrag.pts.shift();
+});
+function slingCancel(){ sdrag = null; slingBean.classList.remove("dragging"); slingBean.style.transform = ""; }
+slingBean.addEventListener("pointercancel", slingCancel);
+slingBean.addEventListener("pointerup", e=>{
+  if (!sdrag || e.pointerId !== sdrag.id) return;
+  const d = sdrag; sdrag = null;
+  const now = performance.now(), p1 = { x:e.clientX, y:e.clientY, t:now };
+  const p0 = d.pts.find(p=>now - p.t < 110) || d.pts[0];
+  const dt = Math.max(16, p1.t - p0.t), vx = (p1.x - p0.x)/dt, vy = (p1.y - p0.y)/dt, speed = Math.hypot(vx, vy);
+  if (Math.hypot(p1.x - d.ox, p1.y - d.oy) < 12){ slingCancel(); return; }
+  if (speed < .3 || vy > -.08){ slingCancel(); document.getElementById("wallCaption").textContent = "Lance vers le haut, et d'un geste vif !"; return; }
+  const ux = vx/speed, uy = vy/speed, travel = clamp(speed*560, 280, 1200);
+  let best = null;
+  document.querySelectorAll("#wall .poster").forEach(po=>{
+    const r = po.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+    const cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const t = clamp((cx - p1.x)*ux + (cy - p1.y)*uy, 0, travel);
+    const px = p1.x + ux*t, py = p1.y + uy*t, dist = Math.hypot(cx - px, cy - py);
+    if (dist < Math.min(r.width, r.height)/2 + 8 && (!best || t < best.t)) best = { po, t, px, py, r };
+  });
+  WALL.busy = true; slingBean.style.visibility = "hidden"; slingBean.classList.remove("dragging");
+  if (best){
+    const hx = clamp(best.px, best.r.left + 14, best.r.right - 14), hy = clamp(best.py, best.r.top + 14, best.r.bottom - 14);
+    flyBean(p1.x, p1.y, hx, hy, ()=>landHit(best.po, hx, hy));
+  } else flyBean(p1.x, p1.y, p1.x + ux*travel, p1.y + uy*travel, landMiss);
+});
+// tap direct sur une affiche : le grain part du lance-pierre
 let lastThrow = 0;
 function throwBean(poster, ev){
-  if (!me){ toast("Choisis d'abord qui tu es (en haut) pour avoir des munitions."); return; }
-  const now = performance.now(); if (now - lastThrow < 180) return; lastThrow = now;
-  const k = poster.dataset.shame, rect = poster.getBoundingClientRect();
+  if (needMe()) return;
+  const now = performance.now(); if (now - lastThrow < 200 || WALL.busy) return; lastThrow = now;
+  const rect = poster.getBoundingClientRect();
   const tx = ev.clientX || rect.left + rect.width/2, ty = ev.clientY || rect.top + rect.height/2;
-  const sx = innerWidth/2 + (Math.random()-.5)*120, sy = innerHeight + 20;
-  const done = () => {
-    poster.classList.remove("hit"); void poster.offsetWidth; poster.classList.add("hit");
-    const s = { x: Math.round(tx - rect.left - 15), y: Math.round(ty - rect.top - 15), r: Math.round(Math.random()*360) };
-    (splats[k] = splats[k] || []).push(s); if (splats[k].length > 14) splats[k].shift();
-    const el = document.createElement("span"); el.className = "splat"; el.style.cssText = `left:${s.x}px;top:${s.y}px;transform:rotate(${s.r}deg)`; el.innerHTML = SPLAT; poster.appendChild(el);
-    addGrain(k); renderWall(compute());
-    const name = state.players[k] ? state.players[k].name : "?";
-    document.getElementById("wallCaption").textContent = k === me ? `Tu te jettes des grains à toi-même. Gérard respecte l'autocritique.` : pick(SHAME)(name);
-  };
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches){ done(); return; }
-  const b = document.createElement("div"); b.className = "flying"; b.innerHTML = BEAN; document.body.appendChild(b);
-  const mx = (sx+tx)/2, my = Math.min(sy, ty) - 140;
-  const a = b.animate([
-    { transform: `translate(${sx}px,${sy}px) rotate(0deg)` },
-    { transform: `translate(${mx}px,${my}px) rotate(400deg)`, offset: .5, easing: "ease-in" },
-    { transform: `translate(${tx-8}px,${ty-11}px) rotate(800deg)` }
-  ], { duration: 420, easing: "ease-out" });
-  a.onfinish = () => { b.remove(); done(); };
+  const pad = document.querySelector(".sling-pad").getBoundingClientRect();
+  const sx = pad.width ? pad.left + pad.width/2 : innerWidth/2, sy = pad.width ? pad.top + pad.height/2 : innerHeight;
+  WALL.busy = true; slingBean.style.visibility = "hidden";
+  flyBean(sx, sy, tx, ty, ()=>landHit(poster, tx, ty));
 }
+slingReset();
 
 /* ---------- Attrape-grains ---------- */
-const CG = { running:false, items:[], x:.5, score:0, t:0, last:0, spawn:0, img:null, imgUrl:"", keys:{} };
+const CG = { running:false, items:[], fx:[], x:.5, fingerX:null, fingerT:0, down:false, score:0, t:0, elapsed:0, bonus:0, last:0, spawn:0, img:null, imgUrl:"", keys:{}, combo:0, miss:0, big:0, small:0, rev:0, shake:0, caught:0 };
+const CATCH_KINDS = [["bean",.58],["gold",.07],["decaf",.13],["sugar",.07],["chili",.08],["clock",.04],["bean",.03]];
+function pickKind(){ let r = Math.random(); for (const [k,w] of CATCH_KINDS){ if ((r -= w) <= 0) return k; } return "bean"; }
+const catchMult = () => CG.combo >= 15 ? 3 : CG.combo >= 6 ? 2 : 1;
+function catchHud(){
+  const hs = document.getElementById("catchScore"); hs.textContent = "Score " + CG.score; popEl(hs);
+  const cp = document.getElementById("catchCombo"), m = catchMult();
+  cp.hidden = CG.combo < 2; cp.textContent = m > 1 ? `Combo ${CG.combo} · ×${m}` : `Combo ${CG.combo}`;
+}
 function catchReset(){
-  CG.items = []; CG.score = 0; CG.t = GAME_SECONDS; CG.spawn = 0; CG.x = .5; CG.shake = 0;
-  document.getElementById("catchScore").textContent = "Score 0"; document.getElementById("catchTime").textContent = GAME_SECONDS + " s";
+  Object.assign(CG, { items:[], fx:[], score:0, t:CATCH_SECONDS, elapsed:0, bonus:0, spawn:0, x:.5, combo:0, miss:0, big:0, small:0, rev:0, shake:0, caught:0, fingerX:null });
+  document.getElementById("catchTime").textContent = CATCH_SECONDS + " s"; catchHud();
 }
 function catchStart(){
+  requestMotion();
   if (!me) toast("Astuce : choisis qui tu es pour enregistrer ton record.");
   const url = me && state.avatars[me];
   if (url && url !== CG.imgUrl){ CG.img = new Image(); CG.img.src = url; CG.imgUrl = url; } else if (!url){ CG.img = null; CG.imgUrl = ""; }
@@ -1051,46 +1303,74 @@ function catchStart(){
 function catchEnd(){
   CG.running = false;
   const s = CG.score, best = me ? setRecord("catch", s) : false;
-  const verdict = s >= 30 ? "Torréfacteur de génie." : s >= 18 ? "Barista solide." : s >= 8 ? "Ça sent le déca." : "Gérard a vu. Gérard est triste.";
-  document.getElementById("catchMsg").textContent = `${s} points. ${verdict}${best ? " Nouveau record perso !" : ""}`;
+  const verdict = s >= 90 ? "Torréfacteur de génie." : s >= 55 ? "Barista solide." : s >= 25 ? "Ça sent le déca." : "Gérard a vu. Gérard est triste.";
+  document.getElementById("catchMsg").textContent = `${s} points, ${CG.caught} grains sauvés. ${verdict}${best ? " Nouveau record perso !" : ""}`;
   document.querySelector("#catchOverlay strong").textContent = best ? "Record !" : "Fin de la pluie";
   document.getElementById("catchStart").textContent = "Rejouer";
   document.getElementById("catchOverlay").hidden = false;
   if (best) beans(30);
   renderGames(compute());
 }
+function catchFx(x, y, text, color){ const n = CG.fx.filter(f=>f.t < .35).length; CG.fx.push({ x: clamp(x, 70, (document.getElementById("catchCanvas").clientWidth || 300) - 70), y: y - n*20, text, color: color || "#2A1810", t: 0 }); }
+function drawItem(g, it){
+  g.save(); g.translate(it.x, it.y); g.rotate(it.r); g.lineWidth = 1.6; g.strokeStyle = "#2A1810";
+  if (it.kind === "decaf"){ g.fillStyle = "#5F7F34"; g.beginPath(); g.roundRect(-13,-10,26,20,6); g.fill(); g.stroke(); g.fillStyle = "#FBF4E8"; g.font = "bold 7px sans-serif"; g.textAlign = "center"; g.fillText("DÉCA", 0, 3); }
+  else if (it.kind === "sugar"){ g.fillStyle = "#fff"; g.beginPath(); g.roundRect(-10,-10,20,20,3); g.fill(); g.stroke(); g.fillStyle = "#E8E1D6"; g.fillRect(-6,-6,4,4); g.fillRect(2,1,4,4); }
+  else if (it.kind === "chili"){ g.fillStyle = "#D7301F"; g.beginPath(); g.moveTo(-4,-10); g.quadraticCurveTo(14,-6,6,12); g.quadraticCurveTo(0,4,-6,-6); g.closePath(); g.fill(); g.stroke(); g.strokeStyle = "#3F7F2A"; g.lineWidth = 3; g.beginPath(); g.moveTo(-4,-10); g.lineTo(-8,-15); g.stroke(); }
+  else if (it.kind === "clock"){ g.fillStyle = "#9FD0EA"; g.beginPath(); g.arc(0,0,11,0,Math.PI*2); g.fill(); g.stroke(); g.beginPath(); g.moveTo(0,0); g.lineTo(0,-7); g.moveTo(0,0); g.lineTo(5,2); g.stroke(); }
+  else { g.fillStyle = it.kind==="gold" ? "#E7B22A" : "#5A3420"; g.beginPath(); g.ellipse(0,0,8,11,0,0,Math.PI*2); g.fill(); g.stroke(); g.strokeStyle = it.kind==="gold" ? "#FFF3B0" : "#D9A066"; g.lineWidth = 2; g.beginPath(); g.moveTo(0,-8); g.quadraticCurveTo(-4,0,0,8); g.stroke();
+    if (it.kind === "gold"){ g.globalAlpha = .5 + .5*Math.sin(it.y/12); g.fillStyle = "#FFF3B0"; g.beginPath(); g.arc(7,-9,2.5,0,Math.PI*2); g.fill(); } }
+  g.restore();
+}
 function catchLoop(now){
   if (!CG.running) return;
   const cv = document.getElementById("catchCanvas"), g = cv.getContext("2d");
   const W = cv.clientWidth, H = cv.clientHeight, dpr = devicePixelRatio || 1;
-  if (cv.width !== Math.round(W*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
+  if (cv.width !== Math.round(W*dpr) || cv.height !== Math.round(H*dpr)){ cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr); }
   g.setTransform(dpr,0,0,dpr,0,0);
   const dt = Math.min(.05, (now - CG.last)/1000); CG.last = now;
-  CG.t -= dt; if (CG.t <= 0){ CG.t = 0; catchEnd(); }
-  if (CG.keys.ArrowLeft) CG.x -= dt*1.1; if (CG.keys.ArrowRight) CG.x += dt*1.1; CG.x = Math.max(.05, Math.min(.95, CG.x));
-  const elapsed = GAME_SECONDS - CG.t; CG.spawn -= dt;
+  CG.t -= dt; CG.elapsed += dt; CG.big -= dt; CG.small -= dt; CG.rev -= dt; CG.shake -= dt;
+  if (CG.t <= 0){ CG.t = 0; catchEnd(); }
+  const final = CG.t <= 5;
+  // commandes : doigt prioritaire, sinon inclinaison, sinon flèches
+  const fingerOn = CG.fingerX != null && (CG.down || now - CG.fingerT < 300);
+  if (fingerOn){ const tx = CG.rev > 0 ? 1 - CG.fingerX : CG.fingerX; CG.x += (tx - CG.x) * Math.min(1, dt*16); }
+  else if (tiltActive()){ let gm = MOTION.gamma; if (CG.rev > 0) gm = -gm; CG.x += clamp(gm/28, -1.2, 1.2) * dt * 1.7; }
+  const kd = (CG.keys.ArrowRight ? 1 : 0) - (CG.keys.ArrowLeft ? 1 : 0); if (kd) CG.x += kd * (CG.rev > 0 ? -1 : 1) * dt * 1.2;
+  CG.x = clamp(CG.x, .06, .94);
+  // apparition
+  CG.spawn -= dt;
   if (CG.spawn <= 0){
-    const r = Math.random(); const kind = r < .08 ? "gold" : r < .3 ? "decaf" : "bean";
-    CG.items.push({ kind, x: 20 + Math.random()*(W-40), y: -20, v: 150 + elapsed*22 + Math.random()*70, r: Math.random()*6, vr: (Math.random()-.5)*6 });
-    CG.spawn = Math.max(.16, .42 - elapsed*.026);
+    const kind = pickKind();
+    if (kind !== "clock" || CG.bonus < CATCH_MAX - CATCH_SECONDS)
+      CG.items.push({ kind, x: 22 + Math.random()*(W-44), y: -20, v: (140 + CG.elapsed*8 + Math.random()*70) * (final ? 1.25 : 1), r: Math.random()*6, vr: (Math.random()-.5)*6, wob: Math.random()*6 });
+    CG.spawn = Math.max(.14, .44 - CG.elapsed*.011) * (final ? .7 : 1);
   }
-  const cupW = 74, cupH = 54, cx = CG.x*W, cy = H - cupH - 8;
+  const cupW = 74 * (CG.big > 0 ? 1.6 : 1) * (CG.small > 0 ? .6 : 1), cupH = 54, cx = CG.x*W, cy = H - cupH - 8;
   g.clearRect(0,0,W,H);
+  if (final){ g.fillStyle = `rgba(194,55,44,${.08 + .05*Math.sin(now/120)})`; g.fillRect(0,0,W,H); }
+  if (CG.rev > 0){ g.fillStyle = "rgba(215,48,31,.07)"; g.fillRect(0,0,W,H); }
   CG.items = CG.items.filter(it=>{
-    it.y += it.v*dt; it.r += it.vr*dt;
+    it.y += it.v*dt; it.r += it.vr*dt; if (it.kind === "chili") it.x += Math.sin(it.y/30 + it.wob) * 40 * dt;
     if (it.y > cy - 6 && it.y < cy + 18 && Math.abs(it.x - cx) < cupW/2){
-      const pts = it.kind==="gold" ? 5 : it.kind==="decaf" ? -3 : 1; CG.score = Math.max(0, CG.score + pts);
-      if (it.kind==="decaf") CG.shake = .3;
-      const hs = document.getElementById("catchScore"); hs.textContent = "Score " + CG.score; hs.classList.remove("bump"); void hs.offsetWidth; hs.classList.add("bump"); if (it.kind!=="bean") buzz(it.kind==="decaf"?[25,30,25]:15); return false;
+      const m = catchMult() * (final ? 2 : 1);
+      if (it.kind === "bean"){ CG.combo++; CG.miss = 0; CG.caught++; const p = m; CG.score += p; if (m > 1) catchFx(it.x, cy - 10, "+" + p, "#6B3E26"); }
+      else if (it.kind === "gold"){ CG.combo += 2; CG.miss = 0; CG.caught++; const p = 5*m; CG.score += p; catchFx(it.x, cy - 10, "+" + p, "#B8860B"); buzz(18); }
+      else if (it.kind === "decaf"){ CG.score = Math.max(0, CG.score - 3); CG.combo = 0; CG.small = 3; CG.big = 0; CG.shake = .35; catchFx(it.x, cy - 10, "Déca ! −3", "#5F7F34"); buzz([25,30,25]); }
+      else if (it.kind === "sugar"){ CG.big = 4; CG.small = 0; catchFx(it.x, cy - 10, "Sucre ! Tasse XXL", "#6B3E26"); buzz(15); }
+      else if (it.kind === "chili"){ CG.rev = 3.5; catchFx(it.x, cy - 10, "Piment ! Inversé", "#D7301F"); buzz([40,20,40]); }
+      else if (it.kind === "clock"){ const add = Math.min(3, CATCH_MAX - CATCH_SECONDS - CG.bonus); CG.t += add; CG.bonus += add; catchFx(it.x, cy - 10, "+" + add + " s", "#3E6C8C"); buzz(15); }
+      catchHud(); return false;
     }
-    if (it.y > H + 30) return false;
-    g.save(); g.translate(it.x, it.y); g.rotate(it.r);
-    if (it.kind === "decaf"){ g.fillStyle = "#5F7F34"; g.strokeStyle = "#2A1810"; g.lineWidth = 2; g.beginPath(); g.roundRect(-12,-9,24,18,6); g.fill(); g.stroke(); g.fillStyle = "#FBF4E8"; g.font = "bold 7px sans-serif"; g.textAlign = "center"; g.fillText("DÉCA", 0, 3); }
-    else { g.fillStyle = it.kind==="gold" ? "#E7B22A" : "#5A3420"; g.strokeStyle = "#2A1810"; g.lineWidth = 1.5; g.beginPath(); g.ellipse(0,0,8,11,0,0,Math.PI*2); g.fill(); g.stroke(); g.strokeStyle = it.kind==="gold" ? "#FFF3B0" : "#D9A066"; g.lineWidth = 2; g.beginPath(); g.moveTo(0,-8); g.quadraticCurveTo(-4,0,0,8); g.stroke(); }
-    g.restore(); return true;
+    if (it.y > H + 30){
+      if (it.kind === "gold" && CG.combo){ CG.combo = 0; catchFx(it.x, H - 80, "Doré raté, combo perdu", "#C2372C"); catchHud(); }
+      else if (it.kind === "bean" && ++CG.miss >= 3 && CG.combo){ CG.combo = 0; CG.miss = 0; catchFx(it.x, H - 80, "Combo perdu", "#C2372C"); catchHud(); }
+      return false;
+    }
+    drawItem(g, it); return true;
   });
   // tasse
-  const sh = CG.shake > 0 ? (Math.random()-.5)*10 : 0; CG.shake -= dt;
+  const sh = CG.shake > 0 ? (Math.random()-.5)*10 : 0;
   g.save(); g.translate(cx + sh, cy);
   g.lineWidth = 3; g.strokeStyle = "#2A1810";
   g.beginPath(); g.arc(cupW/2 + 2, cupH*.45, 12, -Math.PI/2, Math.PI/2); g.stroke();
@@ -1100,76 +1380,327 @@ function catchLoop(now){
   g.stroke();
   g.fillStyle = "#5A3420"; g.beginPath(); g.ellipse(0, 0, cupW/2, 5, 0, 0, Math.PI*2); g.fill(); g.stroke();
   g.restore();
+  // textes flottants et bandeaux
+  CG.fx = CG.fx.filter(f=>{ f.t += dt; if (f.t > 1) return false; g.globalAlpha = 1 - f.t; g.fillStyle = f.color; g.font = "bold 15px 'Bricolage Grotesque', sans-serif"; g.textAlign = "center"; g.fillText(f.text, f.x, f.y - f.t*50); g.globalAlpha = 1; return true; });
+  g.font = "bold 12px 'DM Mono', monospace"; g.textAlign = "left";
+  let ly = 18;
+  const tag = (txt, col) => { g.fillStyle = col; g.fillText(txt, 10, ly); ly += 16; };
+  if (tiltActive() && !fingerOn) tag("Mode inclinaison", "#6E5444");
+  if (CG.rev > 0) tag(`Piment : inversé ${CG.rev.toFixed(1)} s`, "#D7301F");
+  if (CG.big > 0) tag(`Tasse XXL ${CG.big.toFixed(1)} s`, "#6B3E26");
+  if (CG.small > 0) tag(`Tasse mini ${CG.small.toFixed(1)} s`, "#5F7F34");
+  if (final){ g.textAlign = "center"; g.font = "28px Shrikhand, Georgia, serif"; g.fillStyle = "#C2372C"; g.fillText("RUSH FINAL ×2", W/2, ly + 30 + Math.sin(now/90)*2); }
   document.getElementById("catchTime").textContent = Math.ceil(CG.t) + " s";
   if (CG.running) requestAnimationFrame(catchLoop);
 }
 const arena = document.getElementById("arena");
-arena.addEventListener("pointermove", e=>{ const r = arena.getBoundingClientRect(); CG.x = (e.clientX - r.left)/r.width; });
-arena.addEventListener("pointerdown", e=>{ const r = arena.getBoundingClientRect(); CG.x = (e.clientX - r.left)/r.width; });
+const setFinger = e => { const r = arena.getBoundingClientRect(); CG.fingerX = (e.clientX - r.left)/r.width; CG.fingerT = performance.now(); };
+arena.addEventListener("pointermove", setFinger);
+arena.addEventListener("pointerdown", e=>{ CG.down = true; setFinger(e); });
+addEventListener("pointerup", ()=>{ CG.down = false; });
 addEventListener("keydown", e=>{ if (CG.running && (e.key==="ArrowLeft"||e.key==="ArrowRight")){ CG.keys[e.key] = true; e.preventDefault(); } });
 addEventListener("keyup", e=>{ CG.keys[e.key] = false; });
 document.getElementById("catchStart").addEventListener("click", catchStart);
 
 /* ---------- La crema parfaite ---------- */
-const CR = { round:0, scores:[], level:0, running:false, speed:0, target:[0,0], last:0, phase:0 };
-function cremaNewRound(){
-  const lo = 45 + Math.random()*35; CR.target = [lo, lo + 12 - CR.round*1.5];
-  CR.level = 0; CR.speed = 22 + CR.round*9; CR.phase = Math.random()*6;
-  const t = document.getElementById("cremaTarget"); t.style.bottom = CR.target[0] + "%"; t.style.height = (CR.target[1]-CR.target[0]) + "%";
-  document.getElementById("cremaFill").style.height = "0%";
-}
+const CREMA_LEVELS = [
+  { title:"Tasse 1 · Expresso tranquille", w:15, speed:26, drift:0 },
+  { title:"Tasse 2 · Allongé", w:13, speed:32, drift:0 },
+  { title:"Tasse 3 · La zone danse", w:12, speed:34, drift:9 },
+  { title:"Tasse 4 · Gérard a le hoquet", w:11, speed:36, drift:11, hiccup:true },
+  { title:"Tasse 5 · Ristretto de l'extrême", w:9, speed:42, drift:12, hiccup:true },
+];
+const CR = { gen:0, phase:"idle", round:0, scores:[], level:0, t:0, base:0, last:0, streak:0, foam:0, hic:0, flow:1, cfg:null, raf:0 };
+const crBtn = document.getElementById("cremaBtn");
 function cremaRounds(){
   document.getElementById("cremaRounds").innerHTML = [...Array(CREMA_ROUNDS).keys()].map(i=>`<span>${i < CR.scores.length ? CR.scores[i] : "·"}</span>`).join("");
 }
+function crTarget(){ const c = CR.cfg; const lo = clamp(CR.base + (c.drift ? c.drift*Math.sin(CR.t*1.7) : 0), 18, 88 - c.w); return [lo, lo + c.w]; }
+function cremaPaint(){
+  const [lo, hi] = crTarget(), t = document.getElementById("cremaTarget");
+  t.style.bottom = lo + "%"; t.style.height = (hi - lo) + "%";
+  document.getElementById("cremaFill").style.height = Math.min(100, CR.level) + "%";
+  document.getElementById("cremaFoam").style.height = (CR.foam*7) + "px";
+}
+function cremaNewRound(){
+  CR.cfg = CREMA_LEVELS[CR.round]; CR.base = 40 + Math.random()*30; CR.level = 0; CR.foam = 0; CR.t = Math.random()*6; CR.hic = 0; CR.flow = 1;
+  document.getElementById("cremaTitle").textContent = CR.cfg.title;
+  document.getElementById("cremaGlass").classList.remove("perfect");
+  CR.phase = "ready"; crBtn.className = "btn big hold"; crBtn.textContent = "Maintiens pour verser";
+  cremaPaint();
+}
 function cremaStart(){
-  scrollAboveNav(document.getElementById("cremaBtn"));
-  CR.round = 0; CR.scores = []; cremaRounds(); cremaNewRound(); CR.running = true; CR.last = performance.now();
-  document.getElementById("cremaBtn").textContent = "Stop !"; document.getElementById("cremaCaption").textContent = `Tasse 1 sur ${CREMA_ROUNDS}…`;
-  requestAnimationFrame(cremaLoop);
+  scrollAboveNav(crBtn);
+  CR.gen++; CR.round = 0; CR.scores = []; CR.streak = 0; cremaRounds(); cremaNewRound();
+  document.getElementById("cremaCaption").textContent = "Maintiens le bouton, relâche dans la zone verte.";
+  CR.last = performance.now(); cancelAnimationFrame(CR.raf); CR.raf = requestAnimationFrame(cremaLoop);
 }
 function cremaLoop(now){
-  if (!CR.running) return;
-  const dt = Math.min(.05, (now - CR.last)/1000); CR.last = now; CR.phase += dt*4;
-  CR.level += CR.speed * (0.65 + 0.55*Math.abs(Math.sin(CR.phase))) * dt;
-  document.getElementById("cremaFill").style.height = Math.min(100, CR.level) + "%";
-  if (CR.level >= 100){ cremaStop(true); return; }
-  requestAnimationFrame(cremaLoop);
+  if (CR.phase === "idle") return;
+  const dt = Math.min(.05, (now - CR.last)/1000); CR.last = now; CR.t += dt;
+  if (CR.phase === "pour"){
+    let flow = .75 + .5*Math.abs(Math.sin(CR.t*4));
+    if (CR.cfg.hiccup){ CR.hic -= dt; if (CR.hic <= 0){ CR.flow = Math.random() < .4 ? 0 : (Math.random() < .5 ? 2.2 : 1); CR.hic = .18 + Math.random()*.3; } flow *= CR.flow; }
+    CR.level += CR.cfg.speed * flow * dt;
+    if (CR.level >= 100){ CR.level = 100; cremaPaint(); cremaRelease(true); }
+  }
+  if (CR.phase !== "idle"){ cremaPaint(); CR.raf = requestAnimationFrame(cremaLoop); }
 }
-function cremaStop(overflow){
-  CR.running = false;
-  const mid = (CR.target[0]+CR.target[1])/2, half = (CR.target[1]-CR.target[0])/2;
-  let pts = 0, msg;
-  if (overflow){ msg = "Débordement ! Gérard nage dans le café."; }
+function cremaPress(){
+  if (CR.phase === "idle"){ cremaStart(); return; }
+  if (CR.phase === "ready"){ CR.phase = "pour"; crBtn.classList.add("pouring"); crBtn.textContent = "Relâche dans la zone !"; document.getElementById("cremaStream").classList.add("on"); buzz(8); return; }
+  if (CR.phase === "foam"){ if (CR.foam < 10){ CR.foam++; buzz(6); cremaPaint(); document.getElementById("cremaCaption").textContent = `Mousse : +${CR.foam*3}`; } }
+}
+function cremaRelease(overflow){
+  if (CR.phase !== "pour") return;
+  document.getElementById("cremaStream").classList.remove("on"); crBtn.classList.remove("pouring");
+  if (!overflow && CR.level < 4){ CR.phase = "ready"; crBtn.textContent = "Maintiens pour verser"; document.getElementById("cremaCaption").textContent = "Garde le doigt appuyé pour verser."; return; }
+  const [lo, hi] = crTarget(), mid = (lo + hi)/2, half = (hi - lo)/2;
+  let pts = 0, msg, perfect = false;
+  if (overflow){ msg = "Débordement ! Gérard nage dans le café."; CR.streak = 0; document.getElementById("cremaGlass").classList.add("splash"); setTimeout(()=>document.getElementById("cremaGlass").classList.remove("splash"), 400); buzz([40,30,40]); }
   else {
     const d = Math.abs(CR.level - mid);
     pts = d <= half ? Math.round(100 - (d/half)*30) : Math.max(0, Math.round(70 - (d-half)*6));
-    msg = pts >= 95 ? "Crema d'orfèvre." : pts >= 75 ? "Très honorable." : pts >= 40 ? "Buvable. De justesse." : CR.level < mid ? "C'est un ristretto ou une blague ?" : "Presque une piscine.";
+    perfect = d <= half*.3;
+    if (perfect){ CR.streak++; pts += 20 + (CR.streak >= 2 ? 15*(CR.streak-1) : 0); document.getElementById("cremaGlass").classList.add("perfect"); buzz([15,30,15]); }
+    else CR.streak = 0;
+    msg = perfect ? (CR.streak >= 2 ? `PARFAIT ! Série de ${CR.streak}.` : "PARFAIT ! Crema d'orfèvre.") : pts >= 75 ? "Très honorable." : pts >= 40 ? "Buvable. De justesse." : CR.level < mid ? "C'est un ristretto ou une blague ?" : "Presque une piscine.";
   }
-  CR.scores.push(pts); cremaRounds(); CR.round++;
-  if (CR.round >= CREMA_ROUNDS){
-    const total = CR.scores.reduce((a,b)=>a+b,0), best = me ? setRecord("crema", total) : false;
-    document.getElementById("cremaCaption").textContent = `${msg} Total : ${total}/${CREMA_ROUNDS*100}.${best ? " Nouveau record perso !" : ""}`;
-    document.getElementById("cremaBtn").textContent = "Rejouer"; if (best) beans(30); renderGames(compute()); return;
-  }
-  document.getElementById("cremaCaption").textContent = `${msg} (+${pts}) Tasse ${CR.round+1} sur ${CREMA_ROUNDS}…`;
-  document.getElementById("cremaBtn").disabled = true;
-  setTimeout(()=>{ cremaNewRound(); CR.running = true; CR.last = performance.now(); document.getElementById("cremaBtn").disabled = false; requestAnimationFrame(cremaLoop); }, 900);
+  CR.cur = pts;
+  if (pts >= 40){
+    CR.phase = "foam"; crBtn.className = "btn big hold foaming"; crBtn.textContent = "Tape vite : mousse !";
+    document.getElementById("cremaCaption").textContent = `${msg} (+${pts}) Vite, fais mousser le lait !`;
+    { const g = CR.gen; setTimeout(()=>{ if (g === CR.gen) cremaNext(); }, 1500); }
+  } else { CR.phase = "pause"; crBtn.className = "btn big hold"; crBtn.textContent = "…"; document.getElementById("cremaCaption").textContent = `${msg} (+${pts})`; { const g = CR.gen; setTimeout(()=>{ if (g === CR.gen) cremaNext(); }, 900); } }
 }
-document.getElementById("cremaBtn").addEventListener("click", ()=>{ if (CR.running) cremaStop(false); else if (CR.round === 0 || CR.round >= CREMA_ROUNDS) cremaStart(); });
-addEventListener("keydown", e=>{ if (e.code==="Space" && !document.getElementById("tab-crema").hidden && e.target === document.body){ e.preventDefault(); document.getElementById("cremaBtn").click(); } });
+function cremaNext(){
+  if (CR.phase === "idle") return;
+  const total = CR.cur + CR.foam*3; CR.scores.push(total); cremaRounds(); CR.round++;
+  if (CR.round >= CREMA_ROUNDS){
+    const sum = CR.scores.reduce((a,b)=>a+b,0), best = me ? setRecord("crema", sum) : false;
+    CR.phase = "idle"; crBtn.className = "btn big hold"; crBtn.textContent = "Rejouer";
+    document.getElementById("cremaTitle").textContent = sum >= 600 ? "Barista légendaire." : sum >= 420 ? "Gérard est fier de toi." : sum >= 250 ? "Pas mal pour un lundi." : "On repassera.";
+    document.getElementById("cremaCaption").textContent = `Total : ${sum} points.${best ? " Nouveau record perso !" : ""}`;
+    if (best) beans(30); renderGames(compute()); return;
+  }
+  document.getElementById("cremaCaption").textContent = CR.foam ? `Mousse : +${CR.foam*3}. Tasse suivante !` : "Tasse suivante !";
+  cremaNewRound();
+}
+function cremaStop(){ CR.gen++; CR.phase = "idle"; document.getElementById("cremaStream").classList.remove("on"); crBtn.className = "btn big hold"; crBtn.textContent = "Commencer"; crBtn.disabled = false; }
+crBtn.addEventListener("pointerdown", e=>{ e.preventDefault(); cremaPress(); });
+["pointerup","pointerleave","pointercancel"].forEach(ev=>crBtn.addEventListener(ev, ()=>cremaRelease(false)));
+crBtn.addEventListener("contextmenu", e=>e.preventDefault());
+crBtn.addEventListener("keydown", e=>{ if ((e.code==="Space"||e.key==="Enter") && !e.repeat){ e.preventDefault(); cremaPress(); } });
+crBtn.addEventListener("keyup", e=>{ if (e.code==="Space"||e.key==="Enter"){ e.preventDefault(); cremaRelease(false); } });
+
+/* ---------- Le rush du barista ---------- */
+const INGS = {
+  espresso:{ n:"Espresso", svg:`<svg viewBox="0 0 28 28"><path d="M6 9h14v8a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6z" fill="#3A2216" stroke="#2A1810" stroke-width="2"/><path d="M20 12h2a3 3 0 0 1 0 6h-2" fill="none" stroke="#2A1810" stroke-width="2"/><path d="M10 3q-2 2 0 4M15 3q-2 2 0 4" stroke="#6E5444" stroke-width="1.5" fill="none"/></svg>` },
+  lait:{ n:"Lait", svg:`<svg viewBox="0 0 28 28"><path d="M9 3h10v4l3 4v14H6V11l3-4z" fill="#fff" stroke="#2A1810" stroke-width="2" stroke-linejoin="round"/><path d="M6 15h16" stroke="#9FD0EA" stroke-width="3"/></svg>` },
+  mousse:{ n:"Mousse", svg:`<svg viewBox="0 0 28 28"><circle cx="9" cy="16" r="5" fill="#FFF5E4" stroke="#2A1810" stroke-width="1.8"/><circle cx="17" cy="12" r="6" fill="#FFF5E4" stroke="#2A1810" stroke-width="1.8"/><circle cx="19" cy="20" r="4" fill="#FFF5E4" stroke="#2A1810" stroke-width="1.8"/></svg>` },
+  sucre:{ n:"Sucre", svg:`<svg viewBox="0 0 28 28"><path d="M6 11l8-4 8 4v9l-8 4-8-4z" fill="#fff" stroke="#2A1810" stroke-width="2" stroke-linejoin="round"/><path d="M6 11l8 4 8-4M14 15v9" stroke="#2A1810" stroke-width="1.5" fill="none"/></svg>` },
+  chocolat:{ n:"Chocolat", svg:`<svg viewBox="0 0 28 28"><rect x="5" y="5" width="18" height="18" rx="2" fill="#6B3A1E" stroke="#2A1810" stroke-width="2"/><path d="M11 5v18M17 5v18M5 11h18M5 17h18" stroke="#4A2614" stroke-width="1.5"/></svg>` },
+  eau:{ n:"Eau", svg:`<svg viewBox="0 0 28 28"><path d="M14 3q-8 10-8 15a8 8 0 0 0 16 0q0-5-8-15z" fill="#9FD0EA" stroke="#2A1810" stroke-width="2"/></svg>` },
+  glacon:{ n:"Glaçon", svg:`<svg viewBox="0 0 28 28"><rect x="5" y="7" width="15" height="15" rx="3" fill="#DDF2FC" stroke="#2A1810" stroke-width="2" transform="rotate(-10 12 14)"/><path d="M9 11l4 2" stroke="#fff" stroke-width="2"/></svg>` },
+  shaker:{ n:"Secouer", svg:`<svg viewBox="0 0 28 28"><path d="M9 8h10l-1 16h-8z" fill="#C9C1BA" stroke="#2A1810" stroke-width="2" stroke-linejoin="round"/><path d="M10 4h8v4h-8z" fill="#9C8F86" stroke="#2A1810" stroke-width="2"/><path d="M3 12l3 2M3 18l3-1M25 12l-3 2M25 18l-3-1" stroke="#C2372C" stroke-width="2" stroke-linecap="round"/></svg>` },
+};
+const TRAY = ["espresso","lait","mousse","sucre","chocolat","eau","glacon","shaker"];
+const RECIPES = [
+  { n:"Expresso", i:["espresso"], lvl:0 }, { n:"Café sucré", i:["espresso","sucre"], lvl:0 },
+  { n:"Allongé", i:["espresso","eau"], lvl:0 }, { n:"Noisette", i:["espresso","lait"], lvl:0 },
+  { n:"Cappuccino", i:["espresso","lait","mousse"], lvl:1 }, { n:"Mocha", i:["espresso","chocolat","lait"], lvl:1 },
+  { n:"Chocolat chaud", i:["chocolat","lait","mousse"], lvl:1 }, { n:"Thé… non, eau chaude", i:["eau","sucre"], lvl:1 },
+  { n:"Frappé", i:["espresso","glacon","sucre"], shake:true, lvl:2 }, { n:"Latte glacé secoué", i:["espresso","glacon","lait"], shake:true, lvl:2 },
+  { n:"Le spécial Gérard", i:["espresso","chocolat","mousse","sucre"], shake:true, lvl:2 },
+];
+const RUSH_NAMES = ["Le stagiaire","La compta","Le boss","Quelqu'un de la réunion","Le livreur","La RH"];
+const RUSH_TIPS = ["Pourboire : un sourire.","Pourboire : 2 centimes et un ticket resto périmé.","« Enfin quelqu'un de compétent ! »","Le client te fait un clin d'œil.","Pourboire : une blague nulle.","« Meilleur café de l'étage. »"];
+const RU = { running:false, score:0, t:0, elapsed:0, last:0, combo:0, served:0, order:null, added:[], patience:0, patienceMax:1, shakeN:0, phase:"idle", raf:0 };
+const rushMult = () => RU.combo >= 5 ? 2 : RU.combo >= 3 ? 1.5 : 1;
+function rushTrayRender(){
+  document.getElementById("rushTray").innerHTML = TRAY.map(k=>`<button class="token" data-ing="${k}">${INGS[k].svg}<span>${INGS[k].n}</span></button>`).join("");
+}
+function rushMsg(t){ const m = document.getElementById("rushMsg"); m.textContent = t; popEl(m); }
+function rushHud(){
+  const s = document.getElementById("rushScore"); s.textContent = "Score " + RU.score; popEl(s);
+  const c = document.getElementById("rushCombo"), m = rushMult(); c.hidden = RU.combo < 2; c.textContent = m > 1 ? `Série ${RU.combo} · ×${m}` : `Série ${RU.combo}`;
+}
+function rushCustomer(){
+  const others = Object.entries(state.players).filter(([id])=>id !== me).map(([,p])=>p.name);
+  return pick(others.length ? others.concat(RUSH_NAMES) : RUSH_NAMES);
+}
+function rushNewOrder(){
+  const lvl = RU.elapsed < 7 ? 0 : RU.elapsed < 16 ? 1 : 2;
+  const pool = RECIPES.filter(r=>r.lvl <= lvl && (lvl === 0 || r.lvl >= lvl - 1));
+  let r = pick(pool); if (RU.order && r.n === RU.order.n) r = pick(pool);
+  RU.order = { ...r, vip: Math.random() < .14, who: rushCustomer() };
+  RU.added = []; RU.shakeN = 0; RU.phase = "build";
+  RU.patienceMax = RU.patience = Math.max(5.5, (8 + r.i.length*1.3 + (r.shake ? 2 : 0)) - RU.elapsed*.06);
+  document.getElementById("rushLayers").innerHTML = "";
+  document.getElementById("rushShake").hidden = true;
+  const cup = document.getElementById("rushCup"); cup.classList.remove("served","bad","shaking");
+  rushOrderRender(true);
+}
+function rushOrderRender(enter){
+  const o = RU.order, el = document.getElementById("rushOrder");
+  el.className = "order" + (o.vip ? " vip" : "") + (enter ? " enter" : "");
+  el.innerHTML = `<div class="order-top"><span class="cust">${o.vip ? "VIP · " : ""}Pour ${esc(o.who)}</span><span class="oname">${esc(o.n)}</span></div>
+    <div class="recipe">${o.i.map(k=>`<span class="ing ${RU.added.includes(k)?"done":""}">${INGS[k].n}</span>`).join("")}${o.shake?`<span class="ing shake ${RU.phase==="served"?"done":""}">Secouer</span>`:""}</div>
+    <div class="patience"><i id="rushPat"></i></div>`;
+}
+function rushAdd(k, from){
+  if (!RU.running || RU.phase === "served") return;
+  const cupEl = document.getElementById("rushCup"), cr = cupEl.getBoundingClientRect();
+  if (k === "shaker"){
+    if (RU.phase === "shake"){ rushShakeTick(); return; }
+    rushFail("Secouer une tasse vide ? Audacieux."); return;
+  }
+  if (RU.phase === "shake"){ rushMsg("C'est prêt, secoue maintenant !"); return; }
+  if (!RU.order.i.includes(k) || RU.added.includes(k)){
+    rushFail(RU.added.includes(k) ? `Deux fois ${INGS[k].n.toLowerCase()} ? Le client va exploser.` : `${INGS[k].n} dans un ${RU.order.n.toLowerCase()} ? Beurk. Poubelle.`); return;
+  }
+  RU.added.push(k);
+  const L = document.createElement("span"); L.className = "layer L-" + k; document.getElementById("rushLayers").appendChild(L); requestAnimationFrame(()=>L.classList.add("in"));
+  buzz(8); rushOrderRender(false);
+  if (RU.added.length === RU.order.i.length){
+    if (RU.order.shake){ RU.phase = "shake"; document.getElementById("rushShake").hidden = false; rushShakeTick(true); rushMsg("Secoue le téléphone ! (ou tape la tasse à fond)"); }
+    else rushServe();
+  }
+}
+function rushShakeTick(init){
+  if (!init){ RU.shakeN++; const cup = document.getElementById("rushCup"); cup.classList.add("shaking"); clearTimeout(RU.shT); RU.shT = setTimeout(()=>cup.classList.remove("shaking"), 220); buzz(10); }
+  document.getElementById("rushShakeBar").style.setProperty("--p", Math.min(100, RU.shakeN/7*100) + "%");
+  if (RU.shakeN >= 7){ document.getElementById("rushShake").hidden = true; rushServe(); }
+}
+MOTION.shakeCbs.add(()=>{ if (RU.running && RU.phase === "shake") rushShakeTick(); });
+function rushFail(msg){
+  RU.combo = 0; RU.score = Math.max(0, RU.score - 3); RU.added = []; RU.phase = "build";
+  document.getElementById("rushLayers").innerHTML = ""; document.getElementById("rushShake").hidden = true;
+  const cup = document.getElementById("rushCup"); cup.classList.remove("bad"); void cup.offsetWidth; cup.classList.add("bad");
+  const r = cup.getBoundingClientRect(); floatText(r.left + r.width/2, r.top, "−3", "rush-float bad");
+  rushMsg(msg); rushOrderRender(false); rushHud(); buzz([30,40,30]);
+}
+function rushServe(){
+  RU.phase = "served"; RU.combo++; RU.served++;
+  const ratio = clamp(RU.patience / RU.patienceMax, 0, 1);
+  const pts = Math.round((10 + Math.round(ratio*10) + (RU.order.shake ? 5 : 0)) * rushMult() * (RU.order.vip ? 2 : 1));
+  RU.score += pts; rushHud(); rushOrderRender(false);
+  const cup = document.getElementById("rushCup"), r = cup.getBoundingClientRect();
+  floatText(r.left + r.width/2, r.top, "+" + pts, "rush-float");
+  cup.classList.add("served");
+  rushMsg(RU.order.vip ? `VIP servi ! Points doublés. ${pick(RUSH_TIPS)}` : ratio > .7 ? `Éclair ! ${pick(RUSH_TIPS)}` : pick(RUSH_TIPS));
+  buzz([15,30,15]);
+  setTimeout(()=>{ if (RU.running) rushNewOrder(); }, 450);
+}
+function rushLoop(now){
+  if (!RU.running) return;
+  const dt = Math.min(.05, (now - RU.last)/1000); RU.last = now;
+  RU.t -= dt; RU.elapsed += dt;
+  if (RU.phase !== "served"){
+    RU.patience -= dt;
+    const pat = document.getElementById("rushPat");
+    if (pat){ const p = clamp(RU.patience/RU.patienceMax, 0, 1); pat.style.transform = `scaleX(${p})`; pat.style.background = p > .5 ? "#5F7F34" : p > .25 ? "#E7B22A" : "#C2372C"; }
+    if (RU.patience <= 0){
+      RU.combo = 0; RU.score = Math.max(0, RU.score - 5); rushHud();
+      const r = document.getElementById("rushOrder").getBoundingClientRect(); floatText(r.left + r.width/2, r.top + 20, "−5", "rush-float bad");
+      rushMsg(`${RU.order.who} est parti(e) chez la machine du 2e étage.`); buzz([40,40,40]);
+      rushNewOrder();
+    }
+  }
+  document.getElementById("rushTime").textContent = Math.ceil(Math.max(0, RU.t)) + " s";
+  if (RU.t <= 0){ rushEnd(); return; }
+  RU.raf = requestAnimationFrame(rushLoop);
+}
+function rushStart(){
+  requestMotion();
+  if (!me) toast("Astuce : choisis qui tu es pour enregistrer ton record.");
+  Object.assign(RU, { running:true, score:0, t:RUSH_SECONDS, elapsed:0, combo:0, served:0, order:null, last:performance.now() });
+  document.getElementById("rushOverlay").hidden = true; rushHud();
+  rushMsg("Glisse les ingrédients dans la tasse !");
+  rushNewOrder();
+  scrollAboveNav(document.getElementById("rushTray"));
+  cancelAnimationFrame(RU.raf); RU.raf = requestAnimationFrame(rushLoop);
+}
+function rushEnd(){
+  RU.running = false; RU.phase = "idle";
+  const s = RU.score, best = me ? setRecord("rush", s) : false;
+  const verdict = s >= 160 ? "Barista de palace." : s >= 100 ? "Le comptoir tourne comme une horloge." : s >= 50 ? "Ça passe, avec un peu de mousse sur le nez." : "Les clients sont partis au distributeur.";
+  document.querySelector("#rushOverlay strong").textContent = best ? "Record !" : "Fin du service";
+  document.getElementById("rushOverMsg").textContent = `${s} points, ${RU.served} commande${RU.served>1?"s":""} servie${RU.served>1?"s":""}. ${verdict}${best ? " Nouveau record perso !" : ""}`;
+  document.getElementById("rushStart").textContent = "Rouvrir le comptoir";
+  document.getElementById("rushOverlay").hidden = false;
+  if (best) beans(30);
+  renderGames(compute());
+}
+function rushStop(){ if (!RU.running) return; RU.running = false; RU.phase = "idle"; document.getElementById("rushOverlay").hidden = false; }
+// glisser-déposer des ingrédients
+let rdrag = null;
+const rushTray = document.getElementById("rushTray"), rushCupEl = document.getElementById("rushCup");
+const overCup = (x, y) => { const r = rushCupEl.getBoundingClientRect(); return x > r.left - 24 && x < r.right + 24 && y > r.top - 24 && y < r.bottom + 24; };
+function flyToCup(fromRect, k){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const g = document.createElement("div"); g.className = "token ghost"; g.innerHTML = INGS[k].svg;
+  Object.assign(g.style, { left: fromRect.left + "px", top: fromRect.top + "px", width: fromRect.width + "px", height: fromRect.height + "px" });
+  document.body.appendChild(g);
+  const c = rushCupEl.getBoundingClientRect();
+  const dx = c.left + c.width/2 - (fromRect.left + fromRect.width/2), dy = c.top + c.height/2 - (fromRect.top + fromRect.height/2);
+  g.animate([{ transform:"translate(0,0) scale(1)" }, { transform:`translate(${dx}px,${dy - 30}px) scale(.8) rotate(-10deg)`, offset:.7 }, { transform:`translate(${dx}px,${dy}px) scale(.3)`, opacity:0 }], { duration: 280, easing:"ease-in" }).onfinish = () => g.remove();
+}
+rushTray.addEventListener("pointerdown", e=>{
+  const tk = e.target.closest(".token"); if (!tk || !RU.running) return;
+  e.preventDefault(); try { tk.setPointerCapture(e.pointerId); } catch(_){}
+  const r = tk.getBoundingClientRect(), ghost = tk.cloneNode(true); ghost.classList.add("ghost");
+  Object.assign(ghost.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", opacity: "0" });
+  document.body.appendChild(ghost);
+  rdrag = { id:e.pointerId, tk, ghost, r, ox:e.clientX, oy:e.clientY, moved:0 };
+});
+rushTray.addEventListener("pointermove", e=>{
+  if (!rdrag || e.pointerId !== rdrag.id) return;
+  const dx = e.clientX - rdrag.ox, dy = e.clientY - rdrag.oy; rdrag.moved = Math.max(rdrag.moved, Math.hypot(dx, dy));
+  if (rdrag.moved > 6) rdrag.ghost.style.opacity = "1";
+  rdrag.ghost.style.transform = `translate(${dx}px,${dy}px) scale(1.12) rotate(${dx*.08}deg)`;
+  rushCupEl.classList.toggle("over", overCup(e.clientX, e.clientY));
+});
+function rushDrop(e, cancel){
+  if (!rdrag || e.pointerId !== rdrag.id) return;
+  const d = rdrag; rdrag = null; rushCupEl.classList.remove("over");
+  const k = d.tk.dataset.ing;
+  if (cancel){ d.ghost.remove(); return; }
+  if (d.moved < 10){ d.ghost.remove(); flyToCup(d.r, k); rushAdd(k); return; }
+  if (overCup(e.clientX, e.clientY)){
+    d.ghost.animate([{ transform: d.ghost.style.transform }, { transform: `${d.ghost.style.transform} scale(.2)`, opacity: 0 }], { duration: 180 }).onfinish = () => d.ghost.remove();
+    rushAdd(k);
+  } else {
+    d.ghost.animate([{ transform: d.ghost.style.transform, opacity: 1 }, { transform: "translate(0,0) scale(1)", opacity: 0 }], { duration: 260, easing: "ease-out" }).onfinish = () => d.ghost.remove();
+  }
+}
+rushTray.addEventListener("pointerup", e=>rushDrop(e, false));
+rushTray.addEventListener("pointercancel", e=>rushDrop(e, true));
+rushCupEl.addEventListener("click", ()=>{ if (RU.running && RU.phase === "shake") rushShakeTick(); });
+document.getElementById("rushStart").addEventListener("click", rushStart);
+rushTrayRender();
 
 /* ---------- Onglets + rendu des jeux ---------- */
+function stopGames(keep){
+  if (keep !== "catch" && CG.running){ CG.running = false; document.getElementById("catchOverlay").hidden = false; }
+  if (keep !== "crema" && CR.phase !== "idle") cremaStop();
+  if (keep !== "rush") rushStop();
+}
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click", ()=>{
   document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected", x===t));
-  ["wall","catch","crema"].forEach(n=>{ document.getElementById("tab-"+n).hidden = n !== t.dataset.tab; });
-  if (t.dataset.tab !== "catch" && CG.running){ CG.running = false; document.getElementById("catchOverlay").hidden = false; }
+  ["wall","catch","crema","rush"].forEach(n=>{ document.getElementById("tab-"+n).hidden = n !== t.dataset.tab; });
+  stopGames(t.dataset.tab);
   if (t.dataset.tab === "catch") scrollAboveNav(document.getElementById("arena"));
-  if (t.dataset.tab === "crema") scrollAboveNav(document.getElementById("cremaBtn"));
+  if (t.dataset.tab === "crema") scrollAboveNav(crBtn);
+  if (t.dataset.tab === "rush") scrollAboveNav(document.getElementById("rushTray"));
 }));
 function renderGames(c){
   renderWall(c);
+  const wb = teamRecord("wall");
+  if (wb) document.getElementById("wallRec").innerHTML += ` · Meilleure rafale : <b>×${wb.v}</b> par ${esc(wb.name)}`;
   document.getElementById("catchRec").innerHTML = recordLine("catch","pts");
-  document.getElementById("cremaRec").innerHTML = recordLine("crema","/" + CREMA_ROUNDS*100);
+  document.getElementById("cremaRec").innerHTML = recordLine("crema","pts");
+  document.getElementById("rushRec").innerHTML = recordLine("rush","pts");
 }
 cremaRounds();
 
@@ -1351,7 +1882,7 @@ function loadDemo(){
     if (e.type==="descale"){ meta.lastDescale = e.at; meta.cupsAtDescale = total; }
   }
   state.players = players; state.events = ev; state.meta = meta; me = "a";
-  state.avatars = {}; state.games = { a:{ grains:{ b:7 }, records:{ catch:24, crema:241 } }, c:{ grains:{ b:4, d:2 }, records:{ catch:17 } } };
+  state.avatars = {}; state.games = { a:{ grains:{ b:7 }, records:{ catch:58, crema:512, rush:96, wall:7 } }, c:{ grains:{ b:4, d:2 }, records:{ catch:41, rush:70 } } };
   render();
 }
 
@@ -1364,8 +1895,7 @@ function showScreen(name){
   SCREENS.forEach(n=>{ document.getElementById("screen-"+n).hidden = n !== name; });
   document.querySelectorAll(".nav-btn").forEach(b=>{ if (b.dataset.goto === name) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
   document.getElementById("navPill").style.transform = `translateX(${SCREENS.indexOf(name)*100}%)`;
-  if (name !== "games" && CG.running){ CG.running = false; document.getElementById("catchOverlay").hidden = false; }
-  if (name !== "games" && CR.running){ CR.running = false; CR.round = 0; document.getElementById("cremaBtn").textContent = "Servir"; document.getElementById("cremaBtn").disabled = false; }
+  if (name !== "games") stopGames(null);
   const el = document.getElementById("screen-"+name);
   el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter");
   clearTimeout(el._t); el._t = setTimeout(()=>el.classList.remove("enter"), 900);
