@@ -848,7 +848,7 @@ function render(){
   const recent = [...state.events].sort((a,b)=>b.at-a.at).slice(0,14);
   log.innerHTML = recent.length ? recent.map(e=>{
     const p = state.players[e.player]; if (!p) return "";
-    const fns = ACT_TXT[e.type]||ACT_TXT.cup; const fn = fns[(e.at>>3)%fns.length];
+    const fns = ACT_TXT[e.type]||ACT_TXT.cup; const fn = fns[Math.floor(e.at/8)%fns.length];
     const mine = e.player===me && !e.manual && Date.now()-e.at < 10*60e3;
     return `<li><span class="dot" style="background:${p.color}"></span><span>${esc(fn(p.name,e.qty))}${mine?`<button class="undo" data-undo="${esc(e.id)}">annuler</button>`:""}</span><span class="when">${ago(e.at)}</span></li>`;
   }).join("") : `<li><span></span><span style="color:var(--ink-soft)">Aucun crime pour l'instant. Gérard attend.</span><span></span></li>`;
